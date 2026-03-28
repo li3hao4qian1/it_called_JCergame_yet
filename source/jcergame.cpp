@@ -49,21 +49,23 @@ extern "C++" {
 	vector<string> WElist;
 	void weijiinit() {
 		WBname['.'] = "草坪";
-		WBintro['.'] = "任人踩踏的草坪。显然它并不重要。";
+		WBintro['.'] = "思穿盆底。";
 		WBname[','] = "泥土";
-		WBintro[','] = "这块泥土寸草不生，但你明显对石头更感兴趣。";
+		WBintro[','] = "璜土糕圆。";
 		WBname[';'] = "草丛";
-		WBintro[';'] = "听说有人分不清草丛和灌木丛？";
+		WBintro[';'] = "董楠秋玲。";
 		WBname['T'] = "树（可交互）";
-		WBintro['T'] = "木又寸？能吃吗？杕杕杕杕杕杕杕杕";
+		WBintro['T'] = "木又寸。兑。";
 		WBname['o'] = "小石头（可交互）";
 		WBintro['o'] = "据考察，这是1e5年前从冰川飘来的石头。";
 		WBname['w'] = "灌木丛（可交互）";
 		WBintro['w'] = "然而没人知道什么品种能产出这么酸的果子。";
 		WBname['_'] = "水（可交互）";
-		WBintro['_'] = "也许是大洋，也许是海，也许是河，也许是日月潭。";
+		WBintro['_'] = "含盐量未知。";
 		WBname['='] = "木块";
 		WBintro['='] = "墙。";
+		WBname['-'] = "木板";
+		WBintro['-'] = "桥。";
 		WBlist.push_back('.');
 		WBlist.push_back(',');
 		WBlist.push_back(';');
@@ -72,6 +74,7 @@ extern "C++" {
 		WBlist.push_back('w');
 		WBlist.push_back('_');
 		WBlist.push_back('=');
+		WBlist.push_back('-');
 		WEname["swim"]="涉水";
 		WEintro["swim"]="进入水源时获得，每在水中移动一次，效果+1，直到离开";
 		WEeffect["swim"]="移动时，额外失去 X的立方 点体力，x>4时溺亡";
@@ -139,6 +142,7 @@ map<int, string> itemname;
 map<int, int> itemsize;
 vector<ing> ings;
 int hand[15];         // objects on hand
+//int handnum[15];    // TODO
 bool intable[255];    // interact able,It should be map<char,bool>
 bool wall[255];       // pass ability, It should be map<char,bool>
 int handmax;          // max number of objects on hand
@@ -158,8 +162,9 @@ void banquan() {
 	anicls();
 	setpos(0, 0);
 	cout << "                   ︵ \n";
-	cout << "版权所有 Copyleft (Ｃ) 2025-2025 lihaoqian & LiJunyi 所有右重新服务。\n";
+	cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
 	cout << "                   ︶ \n";
+	cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
 	cout << "按 ESC 退出。";
 	while (true) {
 		detect(VK_ESCAPE) {
@@ -174,8 +179,7 @@ void take(int item) {
 		showed = true;
 	} else {
 		int ind = 0;
-		while (hand[++ind] != 0)
-			;
+		while (hand[++ind] != 0);
 		handsize -= itemsize[hand[ind]] * 2;
 		hand[ind] = item;
 		message = "将" + itemname[item] + "装进背包的第" + char(ind + '0') + "个位置！";
@@ -430,8 +434,8 @@ void weijipedia() {
 			cout << "小石子:  无关紧要，不能吃\n";
 			cout << "横木：   超级重，不能吃\n";
 			cout << "酸果：   和小石子一样重，能吃，吃了回复20点体力。（终于有一个能吃的了）\n";
-			cout << "石斧：   造成的伤害+3（？）\n";
-			cout << "木块：   可以放置的木头\n";
+			cout << "石斧：   使用后造成的伤害+3\n";
+			cout << "木块：   可以放置的阻挡通行的木头\n";
 			cout << "按 ESC 回到游戏。\n";
 			
 			while (true) {
@@ -492,50 +496,51 @@ bool move() {
 }
 void build(char c){
 	system("cls");
-	cout<<"在小键盘上选择摆放的位置\n";
+	cout<<"在键盘上选择摆放的位置\n";
 	cout<<"7 8 9\n";
 	cout<<"4 @ 6\n";
 	cout<<"1 2 3\n";
 	cout<<"0(取消)";
 	while(1){
-		detect(VK_NUMPAD0){
+		detects(VK_NUMPAD0,'0'){
 			take(6);
 			break;
 		}
-		detect(VK_NUMPAD7){
+		detects(VK_NUMPAD7,'7'){
 			world[posy-1][posx-1]=c;
 			break;
 		}
-		detect(VK_NUMPAD8){
+		detects(VK_NUMPAD8,'8'){
 			world[posy-1][posx]=c;
 			break;
 		}
-		detect(VK_NUMPAD9){
-			world[posy][posx+1]=c;
+		detects(VK_NUMPAD9,'9'){
+			world[posy-1][posx+1]=c;
 			break;
 		}
-		detect(VK_NUMPAD4){
+		detects(VK_NUMPAD4,'4'){
 			world[posy][posx-1]=c;
 			break;
 		}
-		detect(VK_NUMPAD6){
+		detects(VK_NUMPAD6,'6'){
 			world[posy][posx+1]=c;
 			break;
 		}
-		detect(VK_NUMPAD1){
+		detects(VK_NUMPAD1,'1'){
 			world[posy+1][posx-1]=c;
 			break;
 		}
-		detect(VK_NUMPAD2){
+		detects(VK_NUMPAD2,'2'){
 			world[posy+1][posx]=c;
 			break;
 		}
-		detect(VK_NUMPAD3){
+		detects(VK_NUMPAD3,'3'){
 			world[posy+1][posx+1]=c;
 			break;
 		}
 	}
 }
+
 
 void inittheworld() {
 	printf("定义颜色\n");  //当成注释就行别删
@@ -548,7 +553,8 @@ void inittheworld() {
 	color['o'] = 0x67;     // rock
 	color['w'] = 0xFA;     // intabush
 	color['_'] = 0x3F;     // water
-	color['='] = 0xE6;     // wood
+	color['='] = 0x6E;     // wood
+	color['-'] = 0xE6;     // plank
 	printf("定义物品\n");
 	itemname[0] = "空";
 	itemsize[0] = 0;
@@ -564,15 +570,18 @@ void inittheworld() {
 	itemsize[5] = 2;
 	itemname[6] = "木块";
 	itemsize[6] = 1;
+	itemname[7] = "木板";
+	itemsize[7] = 1;
 	intable['T'] = 1;
 	intable['o'] = 1;
 	intable['w'] = 1;
 	message = "";
 	printf("搭建碰撞箱\n");
 	wall['=']=1;
-	printf("寻找配方\n");
+	printf("定义配方\n");
 	ings.push_back(ing(1, 1, 1, 1, 3, 1, 0, 0, 0, 5));
 	ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 6, 3));
+	ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 7, 4));
 	printf("吃石化其他变量\n");
 	memset(hand, 0, sizeof hand);
 	handind = 1;
@@ -704,6 +713,16 @@ void inittheworld() {
 	system("cls");
 }
 
+void savetheworld(){
+	anicls();
+	setpos(0,0);
+	cout<<"为您的存档命名:";
+	string name;
+	cin>>name;
+	ofstream out((name+".jcs").c_str());
+	//TODO
+}
+
 void The_World() {
 	weijiinit();
 	while (alive) {
@@ -745,9 +764,9 @@ void The_World() {
 		
 		scta(0xF);
 		setpos(0, 27);
-		printf("     容器:背包 容量:%d/%d", handsize, handmax);
+		printf("背包容量:%d/%d", handsize, handmax);
 		setpos(1, 27);
-		cout << "     第" << handind << "个物品，" << itemname[hand[handind]] << " ";
+		cout << "第" << handind << "个物品，" << itemname[hand[handind]] << "";
 		
 		vision = 0x0;
 		bool moved=0;
@@ -784,6 +803,21 @@ void The_World() {
 			hand[handind] = 0;
 			handsize -= 1;
 		}
+		if (press('E') && hand[handind] == 7) {
+			build('-');
+			hand[handind] = 0;
+			handsize -= 1;
+		}
+		
+		if (hand[handind] == 5) {
+			damage=4;
+			message = "持有石斧";
+			showed = true;
+		}else{
+			damage=1;
+			// message = "赤手空拳";
+			// showed = true;
+		}
 		detect('Q') {
 			throwout(handind);
 			handsize--;
@@ -791,7 +825,19 @@ void The_World() {
 				handsize = 0;
 		}
 		detect('R') {
+			bool nxtok=0;
 			for (ing it : ings) {
+				bool canmade = it.unlock;
+				if (!have(it.item1, it.num1))
+					canmade = 0;
+				if (it.have2)
+					if (!have(it.item2, it.num2))
+						canmade = 0;
+				if (it.have3)
+					if (!have(it.item3, it.num3))
+						canmade = 0;
+				if(nxtok&&!canmade) continue;
+				else nxtok=0;
 				anicls();
 				setpos(0, 0);
 				cout << "目前查看" << itemname[it.dest] << "的配方\n";
@@ -808,18 +854,9 @@ void The_World() {
 				}
 				while (1) {
 					setpos(5, 0);
-					bool canmade = it.unlock;
-					if (!have(it.item1, it.num1))
-						canmade = 0;
-					if (it.have2)
-						if (!have(it.item2, it.num2))
-							canmade = 0;
-					if (it.have3)
-						if (!have(it.item3, it.num3))
-							canmade = 0;
 					if (canmade)
-						cout << "[制作1个(P)] ";
-					cout << "[下一个(Q)] [退出(W)]                         ";
+						cout << "[制作  (P)] ";
+					cout << "[下一个(Q)] [退出(W)] [下一个可以合成的(E)]                      ";
 					detect('P') {
 						if (canmade) {
 							throwoutitem(it.item1, it.num1);
@@ -832,6 +869,10 @@ void The_World() {
 					}
 					detect('Q') break;
 					detect('W') goto ohmygod;
+					detect('E'){
+						nxtok=1;
+						break;
+					}
 				}
 			}
 		}
@@ -975,6 +1016,7 @@ void The_World() {
 	Sleep(10);
 }
 int main() {
+	system("title JCerGame");
 	system("color 0F");
 	int pointer = 0;
 	while (1) {
@@ -1005,11 +1047,15 @@ int main() {
 			if (pointer == 2) {
 				anicls();
 				setpos(0, 0);
+				cout << "ver 0.0.5,12/02/26 11:58\n";
+				cout << "* 新功能：放置方块！\n";
+				cout << "* 我们有木块和木板！\n";
 				cout << "更多版本请查看源代码。\n";
-				cout << "ver 0.0.4,06/12/25 21:35\n";
-				cout << "* 新功能：效果！\n";
-				cout << "* 我们有水！\n";
 				if ("收起此部分" == "I AK I0I.") {
+					cout << "ver 0.0.4,06/12/25 21:35\n";
+					cout << "* 新功能：效果！\n";
+					cout << "* 我们有水！\n";
+					
 					cout << "ver 0.0.3,21/07/25 17:24\n";
 					cout << "* 更新了暂停菜单。\n";
 					cout << "* 修复了一个无足轻重(划掉)重如泰山的bug。\n";
@@ -1037,4 +1083,5 @@ int main() {
 	setpos(0, 0);
 	inittheworld();
 	The_World();
+	return 0;
 }
