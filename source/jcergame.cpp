@@ -48,6 +48,10 @@ extern "C++" {
 	map<string,string> WEintro;
 	map<string,string> WEeffect;
 	vector<string> WElist;
+	map<int,string> WIintro;
+	map<int,string> WIusage;
+	map<int,string> WIsourc;
+	int WIcount;
 	void weijiinit() {
 		WBname['.'] = "草坪";
 		WBintro['.'] = "思穿盆底。";
@@ -80,6 +84,31 @@ extern "C++" {
 		WEintro["swim"]="进入水源时获得，每在水中移动一次，效果+1，直到离开";
 		WEeffect["swim"]="移动时，额外失去 X的立方 点体力，x>4时溺亡";
 		WElist.push_back("swim");
+		WIintro[0]="背包的这个位置空着，可以放一个lihaoqian，lihaoqian能不能吃问他。";//Oh LJY
+		WIusage[0]="联系lihaoqian来更改这里的用途。";
+		WIsourc[0]="你有一背包的空气，不是吗？";
+		WIintro[1]="无关紧要，不能吃";
+		WIusage[1]="合成物品";
+		WIsourc[1]="在泥土或草坪上可以捡到";
+		WIintro[2]="超级重，不能吃";
+		WIusage[2]="合成物品";
+		WIsourc[2]="在草坪或草丛上砍树获得";
+		WIintro[3]="a.k.a. 林昆";
+		WIusage[3]="合成物品";
+		WIsourc[3]="在草坪或草丛上采摘灌木丛获得";
+		WIintro[4]="和小石子一样重，能吃，吃了回复20点体力。";
+		WIusage[4]="食用恢复体力";
+		WIsourc[4]="在草坪或草丛上采摘灌木丛获得";
+		WIintro[5]="夏姬霸砍!!";
+		WIusage[5]="拿在手上造成的伤害+3";
+		WIsourc[5]="合成获得";
+		WIintro[6]="可以放置的  阻挡通行的木头";
+		WIusage[6]="放置木块";
+		WIsourc[6]="合成获得";
+		WIintro[7]="可以放置的不阻挡通行的木头";
+		WIusage[7]="放置木板";
+		WIsourc[7]="合成获得";
+		WIcount=7;
 	}
 }  // WeijiPedia
 int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
@@ -138,26 +167,27 @@ struct effect{
 	string name;
 	int value;
 };
-
-string message;
-map<char, int> color;
-map<int, string> itemname;
-map<int, int> itemsize;
-vector<ing> ings;
-bool intable[255];    // interact able,It should be map<char,bool>
-bool wall[255];       // pass ability, It should be map<char,bool>
-bool alive = 1;       // is alive
-int speed = 1;        // delay between movements (ms)
-int force = 114514;   // -1 per movement
-vector<effect> status;// status
-double showed;
-int damage = 1;
-int vision = 0x0000;
-char world[5000][5000];
-char copwd[5000][5000];
-int posx, posy;
-ofstream out;
-ifstream in;
+extern "C++"{//vars
+	string message;
+	map<char, int> color;
+	map<int, string> itemname;
+	map<int, int> itemsize;
+	vector<ing> ings;
+	bool intable[255];    // interact able,It should be map<char,bool>
+	bool wall[255];       // pass ability, It should be map<char,bool>
+	bool alive = 1;       // is alive
+	int speed = 1;        // delay between movements (ms)
+	int force = 114514;   // -1 per movement
+	vector<effect> status;// status
+	double showed;
+	int damage = 1;
+	int vision = 0x0000;
+	char world[5000][5000];
+	char copwd[5000][5000];
+	int posx, posy;
+	ofstream out;
+	ifstream in;
+}
 void banquan() {
 	anicls();
 	setpos(0, 0);
@@ -281,46 +311,49 @@ void itemsystem(bool showtempvlt=0){
 	slot hcl[10],cp;
 	ing usingin(0,0,0,0,0,0,0,0,0,0,0);
 	char _1='?',_2='?';
-	memset(hcl,0,sizeof(hcl));
+	for(int i=0;i<10;i++) hcl[i]=tpltslt;
 	while(1){
 		setpos(0,0);
 		cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
-		for(int i=0;i<inventory.vaults[vps].slots.size();i++){
+		for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
 			if(_1==char(i+'1')) scta(6);else scta(15);
 			cout<<"第"<<i+1<<"个物品槽:             "<<
 				itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
 				inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
 			detect(char(i+'1')){
-				if(_1!=char(i+'1'))
-				if(_1!='?') _2=char(i+'1');
-				else _1=char(i+'1');
+				if(_1!=char(i+'1')){
+					if(_1!='?') _2=char(i+'1');
+					else _1=char(i+'1');
+				}
 			}
 		}
 		if(showtempvlt){
 			scta(15);
 			cout<<"\n地上(退出界面后消失):            \n";
-			for(int i=0;i<tempvlt.slots.size();i++){
+			for(unsigned i=0;i<tempvlt.slots.size();i++){
 				if(_1==char(i+'I')) scta(6);else scta(15);
 				cout<<"第"<<i+1<<"个物品:            "<<
 				itemname[tempvlt.slots[i].item]<<"x"<<
 				tempvlt.slots[i].qutt<<"["<<char(i+'I')<<"]            \n";
 				detect(char(i+'I')){
-					if(_1!=char(i+'I'))
+					if(_1!=char(i+'I')){
 						if(_1!='?') _2=char(i+'I');
 						else _1=char(i+'I');
+					}
 				}
 			}
 		}
 		cout<<endl;
-		for(int i=0;i<inventory.hcl.slots.size();i++){
+		for(unsigned i=0;i<inventory.hcl.slots.size();i++){
 			if(_1==char(i+'X')) scta(6);else scta(15);
 			cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
 			itemname[inventory.hcl.slots[i].item]<<"x"<<
 			inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
 			detect(char(i+'X')){
-				if(_1!=char(i+'X'))
-				if(_1!='?') _2=char(i+'X');
-				else _1=char(i+'X');
+				if(_1!=char(i+'X')){
+					if(_1!='?') _2=char(i+'X');
+					else _1=char(i+'X');
+				}
 			}
 		}
 		scta(8);
@@ -328,16 +361,18 @@ void itemsystem(bool showtempvlt=0){
 		if(_1=='C') scta(6);else scta(15);
 		cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
 		detect('C'){
-			if(_1!='C')
-			if(_1!='?') _2='C';
-			else _1='C';
+			if(_1!='C'){
+				if(_1!='?') _2='C';
+				else _1='C';
+			}
 		}
 		if(_1=='H') scta(6);else scta(15);
 		cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
 		detect('H'){
-			if(_1!='H') 
-			if(_1!='?') _2='H';
-			else _1='H';
+			if(_1!='H'){
+				if(_1!='?') _2='H';
+				else _1='H';
+			}
 		}
 		scta(15);
 		
@@ -591,8 +626,8 @@ void weijipedia() {
 	cout << "      喂鸡百科      \n";
 	cout << "                    \n";
 	cout << "*查看地块----------Q\n";
-	cout << "*查看物品----------W\n";
-	cout << "*查看生物(未开放)--E\n";
+	cout << "*查看物品及配方----W\n";
+	cout << "*查看生物----------E\n";
 	cout << "*查看键位----------R\n";
 	cout << "*查看效果----------T\n";
 	cout << "*版权声明----------Y\n";
@@ -775,21 +810,114 @@ void weijipedia() {
 		}
 		detect('W') {
 			anicls();
-			setpos(0, 0);
-			cout << "空:      背包的这个位置空着，可以放一个lihaoqian，lihaoqian能不能吃问他。\n";//Oh LJY
-			cout << "小石子:  无关紧要，不能吃\n";
-			cout << "横木：   超级重，不能吃\n";
-			cout << "酸果：   和小石子一样重，能吃，吃了回复20点体力。（终于有一个能吃的了）\n";
-			cout << "石斧：   拿在手上造成的伤害+3\n";
-			cout << "木块：   可以放置的  阻挡通行的木头\n";
-			cout << "木板：   可以放置的不阻挡通行的木头\n";
-			cout << "按 ESC 回到游戏。\n";
-			
-			while (true) {
-				detect(VK_ESCAPE) {
-					anicls();
-					return;
+			setpos(0,0);
+			int vps=0;
+			bool sysclr=0;
+			char _1='?';
+			while(1){
+				setpos(0,0);
+				scta(7);
+				cout<<"按ESC退出\n";
+				scta(15);
+				cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
+				for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
+					if(_1==char(i+'1')) scta(6);else scta(15);
+					cout<<"第"<<i+1<<"个物品槽:             "<<
+					itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
+					inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
+					detect(char(i+'1')){
+						_1=char(i+'1');
+						sysclr=1;
+					}
 				}
+				cout<<endl;
+				for(unsigned i=0;i<inventory.hcl.slots.size();i++){
+					if(_1==char(i+'X')) scta(6);else scta(15);
+					cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
+					itemname[inventory.hcl.slots[i].item]<<"x"<<
+					inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
+					detect(char(i+'X')){
+						_1=char(i+'X');
+						sysclr=1;
+					}
+				}
+				if(_1=='C') scta(6);else scta(15);
+				cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
+				detect('C'){
+					if(_1!='C'){
+						_1='C';
+					}
+					sysclr=1;
+				}
+				if(_1=='H') scta(6);else scta(15);
+				cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
+				detect('H'){
+					if(_1!='H'){
+						_1='H';
+					}
+					sysclr=1;
+				}
+				scta(15);
+				
+				if(_1=='?'){
+					cout<<"按下按键查看物品信息\n\n\n\n\n\n\n\n";
+				}
+				else{
+					cout<<"物品名称："<<itemname[tempslt.item]<<endl;
+					cout<<WIintro[tempslt.item]<<endl;
+					cout<<"用途："<<WIusage[tempslt.item]<<endl;
+					cout<<"来源："<<WIsourc[tempslt.item]<<endl;
+					cout<<"相关配方："<<endl;
+					bool flag=1;
+					if(tempslt.item!=0)
+					for(ing in:ings){
+						if(in.item1==tempslt.item
+						 ||in.item2==tempslt.item
+						 ||in.item3==tempslt.item
+						 ||in.dest==tempslt.item){
+							if(in.unlock){
+								cout<<itemname[in.item1]<<"x"<<in.num1<<" ";
+								if(in.have2)
+								cout<<itemname[in.item2]<<"x"<<in.num2<<" ";
+								if(in.have3)
+								cout<<itemname[in.item3]<<"x"<<in.num3<<" ";
+								cout<<"-> "<<itemname[in.dest]<<"x"<<in.num<<endl;
+								flag=0;
+							}
+						}
+					}
+					if(flag) cout<<"无";
+				}
+				
+				if(_1!='?'){
+					if(_1>='1'&&_1<='9'){
+						tempslt.item=inventory.vaults[vps].slots[_1-'1'].item;
+						tempslt.qutt=inventory.vaults[vps].slots[_1-'1'].qutt;
+					}
+					if(_1>='I'&&_1<='M'){
+						tempslt.item=tempvlt.slots[_1-'I'].item;
+						tempslt.qutt=tempvlt.slots[_1-'I'].qutt;
+					}
+					if(_1>='X'&&_1<='Z'){
+						tempslt.item=inventory.hcl.slots[_1-'X'].item;
+						tempslt.qutt=inventory.hcl.slots[_1-'X'].qutt;
+					}
+					if(_1=='C'){
+						tempslt.item=inventory.cp.item;
+						tempslt.qutt=inventory.cp.qutt;
+					}
+					if(_1=='H'){
+						tempslt.item=inventory.hand.item;
+						tempslt.qutt=inventory.hand.qutt;
+					}
+				}
+				
+				if(sysclr){
+					system("cls");
+					sysclr=0;
+				}
+				
+				detect(VK_ESCAPE) return;
 			}
 		}
 		
@@ -1178,6 +1306,10 @@ void The_World() {
 			}
 		}
 		
+		detect('Z'){//item system
+			weijipedia();
+		}
+		
 		detect('R'){//item system
 			itemsystem();
 		}
@@ -1202,67 +1334,6 @@ void The_World() {
 			build('-',7);
 		}
 		
-//		detect('R') {
-//			bool nxtok=0;
-//			for (ing it : ings) {
-//				bool canmade = it.unlock;
-//				if (!have(it.item1, it.num1))
-//					canmade = 0;
-//				if (it.have2)
-//					if (!have(it.item2, it.num2))
-//						canmade = 0;
-//				if (it.have3)
-//					if (!have(it.item3, it.num3))
-//						canmade = 0;
-//				if(nxtok&&!canmade) continue;
-//				else nxtok=0;
-//				anicls();
-//				setpos(0, 0);
-//				cout << "目前查看" << itemname[it.dest] << "的配方\n";
-//				if (it.unlock) {
-//					cout << "你需要：\n";
-//					cout << itemname[it.item1] << "x" << it.num1 << "\n";
-//					if (it.have2)
-//						cout << itemname[it.item2] << "x" << it.num2 << "\n";
-//					if (it.have3)
-//						cout << itemname[it.item3] << "x" << it.num3 << "\n";
-//					cout<<"一次合成"<<it.num<<"个\n";
-//				} else {
-//					cout << "你没解锁所以看不到，很正常，对吧？。\n";
-//				}
-//				while (1) {
-//					if (!have(it.item1, it.num1))
-//						canmade = 0;
-//					if (it.have2)
-//						if (!have(it.item2, it.num2))
-//							canmade = 0;
-//					if (it.have3)
-//						if (!have(it.item3, it.num3))
-//							canmade = 0;
-//					setpos(5, 0);
-//					if (canmade)
-//						cout << "[制作(P)] ";
-//					cout << "[下一个(Q)] [退出(W)] [下一个可以合成的(E)]                      ";
-//					detect('P') {
-//						if (canmade) {
-//							throwoutitem(it.item1, it.num1);
-//							if (it.have2)
-//								throwoutitem(it.item2, it.num2);
-//							if (it.have3)
-//								throwoutitem(it.item3, it.num3);
-//							for(int i=1;i<=it.num;i++) take(it.dest);
-//						}
-//					}
-//					detect('Q') break;
-//					detect('W') goto ohmygod;
-//					detect('E'){
-//						nxtok=1;
-//						break;
-//					}
-//				}
-//			}
-//		}
-//		ohmygod:;
 		detect(VK_ESCAPE) {
 			anicls();
 			int pointer = 0;
@@ -1434,11 +1505,14 @@ int main() {
 			if (pointer == 2) {
 				anicls();
 				setpos(0, 0);
+				cout << "更多版本请查看源代码。\n";
+				cout << "ver 0.0.6.1,18/04/26\n";
+				cout << "* 更新了维基百科中的物品介绍。\n";
+				
 				cout << "ver 0.0.6 “铲屎更新 Pt.1”,06/04/26\n";
 				cout << "* 更新了物品系统。\n";
 				cout << "* 更新了合成系统。\n";
 				cout << "* 更新了存档系统。\n";
-				cout << "更多版本请查看源代码。\n";
 				if ("收起此部分" == "I AK I0I.") {
 					cout << "ver 0.0.5,12/02/26 11:58\n";
 					cout << "* 新功能：放置方块！\n";
