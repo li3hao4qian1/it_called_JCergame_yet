@@ -6,7 +6,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 6
-#define snpsot 2
+#define snpsot 3
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -18,7 +18,7 @@ extern "C++"{//头文件
 #include <direct.h>
 }
 extern "C++"{//其他预处理
-using namespace std;
+	using namespace std;
 // For faster,we will do optimize.
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
@@ -85,6 +85,8 @@ extern "C++"{//更新日志
 		versions[0][0][6][2].init(26,5,30,"");
 		versions[0][0][6][2].addintro("美化了代码。");
 		versions[0][0][6][2].addintro("更新了版本的记录方式。");
+		versions[0][0][6][3].init(26,6,6,"");
+		versions[0][0][6][3].addintro("增加了拆开物品的功能");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -234,93 +236,93 @@ extern "C++"{//喂鸡百科预处理
 	}
 }  // WeijiPedia
 extern "C++"{//有用？的函数
-int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
-void setpos(float x, float y) {
-	COORD pos;
-	pos.X = ti(y * 4) / 2;
-	pos.Y = ti(x);
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-
-void scta(int x) {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);  // set console color
-}
-
-void anicls() {
-	scta(0x0);
-	for (int i = 2; i <= 66; i++) {
-		for (int j = 1; j <= i; j++) {
-			int k = i - j;
-			if (j > 0 && j < 25 && k > 0 && k < 40) {
-				setpos(j - 1, k - 1);
-				cout << "  ";
+	int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
+	void setpos(float x, float y) {
+		COORD pos;
+		pos.X = ti(y * 4) / 2;
+		pos.Y = ti(x);
+		SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	}
+	
+	void scta(int x) {
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);  // set console color
+	}
+	
+	void anicls() {
+		scta(0x0);
+		for (int i = 2; i <= 66; i++) {
+			for (int j = 1; j <= i; j++) {
+				int k = i - j;
+				if (j > 0 && j < 25 && k > 0 && k < 40) {
+					setpos(j - 1, k - 1);
+					cout << "  ";
+				}
+			}
+			Sleep(8);
+		}
+		scta(0xF);
+		system("cls");
+	}
+	void delaymsg(string msg, int ms = 50) {  // Show a string slowly.
+		for (char i : msg) {
+			cout << i;
+			Sleep(ms);
+		}
+	}
+	void banquan() {
+		anicls();
+		setpos(0, 0);
+		cout << "                   ︵ \n";
+		cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
+		cout << "                   ︶ \n";
+		cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
+		cout << "按 ESC 退出。";
+		while (true) {
+			detect(VK_ESCAPE) {
+				anicls();
+				return;
 			}
 		}
-		Sleep(8);
 	}
-	scta(0xF);
-	system("cls");
-}
-void delaymsg(string msg, int ms = 50) {  // Show a string slowly.
-	for (char i : msg) {
-		cout << i;
-		Sleep(ms);
-	}
-}
-void banquan() {
-	anicls();
-	setpos(0, 0);
-	cout << "                   ︵ \n";
-	cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
-	cout << "                   ︶ \n";
-	cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
-	cout << "按 ESC 退出。";
-	while (true) {
-		detect(VK_ESCAPE) {
-			anicls();
-			return;
+	void dead(string msg) {
+		anicls();
+		setpos(0, 0);
+		scta(0xF);
+		delaymsg("你死了！\n");
+		delaymsg("死因：");
+		delaymsg(msg);
+		delaymsg("\n");
+		delaymsg("按Q退出\n");
+		while (1) {
+			detect('Q') { exit(0); }
+			Sleep(10);
 		}
 	}
-}
-void dead(string msg) {
-	anicls();
-	setpos(0, 0);
-	scta(0xF);
-	delaymsg("你死了！\n");
-	delaymsg("死因：");
-	delaymsg(msg);
-	delaymsg("\n");
-	delaymsg("按Q退出\n");
-	while (1) {
-		detect('Q') { exit(0); }
-		Sleep(10);
-	}
-}
 }
 extern "C++"{//结构体
 	struct effect{
 		string name;
 		int value;
 	};
-struct ing {
-	bool unlock;
-	int item1, num1;
-	bool have2;
-	int item2, num2;
-	bool have3;
-	int item3, num3;
-	int dest, num;
-	ing(bool a, int b, int c, bool d, int e, int f, bool g, int h, int i, int j, int k=1) {
-		unlock = a;
-		item1 = b, num1 = c;
-		have2 = d; 	
-		item2 = e, num2 = f;
-		have3 = g;
-		item3 = h, num3 = i;
-		dest = j;
-		num=k;
-	}
-};
+	struct ing {
+		bool unlock;
+		int item1, num1;
+		bool have2;
+		int item2, num2;
+		bool have3;
+		int item3, num3;
+		int dest, num;
+		ing(bool a, int b, int c, bool d, int e, int f, bool g, int h, int i, int j, int k=1) {
+			unlock = a;
+			item1 = b, num1 = c;
+			have2 = d; 	
+			item2 = e, num2 = f;
+			have3 = g;
+			item3 = h, num3 = i;
+			dest = j;
+			num=k;
+		}
+	};
 }
 extern "C++"{//变量
 	string message;
@@ -344,242 +346,479 @@ extern "C++"{//变量
 	ifstream in;
 }//item system
 extern "C++"{//物品系统
-struct slot{
-	int item=0,qutt=0;
-	int weight(){
-		return itemsize[item]*qutt;
-	}
-	void refresh(){
-		if(qutt<=0||item==0){
-			qutt=0;
-			item=0;
+	struct slot{
+		int item=0,qutt=0;
+		int weight(){
+			return itemsize[item]*qutt;
 		}
-	}
-	void wrt(){
-		out<<" "<<item<<" "<<qutt<<" ";
-	}
-	void rid(){
-		in>>item>>qutt;
-	}
-}tpltslt,tempslt,tempslot;
-struct vult{
-	vector<slot> slots;
-	string name="口袋";
-	int weight(){
-		int totwt=0;
-		for(slot sl:slots){
-			totwt+=sl.weight();
-		}
-		return totwt;
-	}
-	void refresh(){
-		for(unsigned i=0;i<slots.size();i++){
-			slots[i].refresh();
-		}
-	}
-	void wrt(){
-		out<<" "<<name<<" "<<slots.size()<<" ";
-		for(unsigned i=0;i<slots.size();i++){
-			slots[i].wrt();
-		}
-	}
-	void rid(){
-		int x;
-		slot y;
-		in>>name>>x;
-		for(int i=1;i<=x;i++){
-			y.rid();
-			slots.push_back(y);
-		}
-	}
-}tpltvlt,tempvlt;
-struct ivtr{
-	slot hand;
-	vult hcl;
-	slot cp;
-	vector<vult> vaults;
-	int weight=0;
-	void rfwt(){ //refresh weight
-		int totwt=hand.weight();
-		for(vult vt:vaults){
-			totwt+=vt.weight();
-		}
-		totwt+=hcl.weight();
-		totwt+=cp.weight();
-		weight=totwt;
-	}
-	void refresh(){
-		for(unsigned i=0;i<vaults.size();i++){
-			vaults[i].refresh();
-		}
-		hand.refresh();
-		hcl.refresh();
-		cp.refresh();
-	}
-	void wi(){//write inventory
-		out<<endl;
-		hand.wrt();
-		hcl.wrt();
-		cp.wrt();
-		out<<" "<<vaults.size()<<" ";
-		for(unsigned i=0;i<vaults.size();i++){
-			vaults[i].wrt();
-		}
-	}
-	void ri(){
-		hand.rid();
-		hcl.rid();
-		cp.rid();
-		int x;
-		vult y;
-		in>>x;
-		for(int i=1;i<=x;i++){
-			y.rid();
-			vaults.push_back(y);
-		}
-	}
-}inventory;
-int ivtrmx; //max weight
-bool slotcmp(slot x,slot y){
-	return x.item>y.item;
-}
-void itemsystem(bool showtempvlt=0){
-	anicls();
-	setpos(0,0);
-	int vps=0;
-	slot hcl[10],cp;
-	ing usingin(0,0,0,0,0,0,0,0,0,0,0);
-	char _1='?',_2='?';
-	for(int i=0;i<10;i++) hcl[i]=tpltslt;
-	while(1){
-		setpos(0,0);
-		cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
-		for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
-			if(_1==char(i+'1')) scta(6);else scta(15);
-			cout<<"第"<<i+1<<"个物品槽:             "<<
-				itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
-				inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
-			detect(char(i+'1')){
-				if(_1!=char(i+'1')){
-					if(_1!='?') _2=char(i+'1');
-					else _1=char(i+'1');
-				}
+		void refresh(){
+			if(qutt<=0||item==0){
+				qutt=0;
+				item=0;
 			}
 		}
-		if(showtempvlt){
-			scta(15);
-			cout<<"\n地上(退出界面后消失):            \n";
-			for(unsigned i=0;i<tempvlt.slots.size();i++){
-				if(_1==char(i+'I')) scta(6);else scta(15);
-				cout<<"第"<<i+1<<"个物品:            "<<
-				itemname[tempvlt.slots[i].item]<<"x"<<
-				tempvlt.slots[i].qutt<<"["<<char(i+'I')<<"]            \n";
-				detect(char(i+'I')){
-					if(_1!=char(i+'I')){
-						if(_1!='?') _2=char(i+'I');
-						else _1=char(i+'I');
+		void wrt(){
+			out<<" "<<item<<" "<<qutt<<" ";
+		}
+		void rid(){
+			in>>item>>qutt;
+		}
+	}tpltslt,tempslt,tempslot;
+	struct vult{
+		vector<slot> slots;
+		string name="口袋";
+		int weight(){
+			int totwt=0;
+			for(slot sl:slots){
+				totwt+=sl.weight();
+			}
+			return totwt;
+		}
+		void refresh(){
+			for(unsigned i=0;i<slots.size();i++){
+				slots[i].refresh();
+			}
+		}
+		void wrt(){
+			out<<" "<<name<<" "<<slots.size()<<" ";
+			for(unsigned i=0;i<slots.size();i++){
+				slots[i].wrt();
+			}
+		}
+		void rid(){
+			int x;
+			slot y;
+			in>>name>>x;
+			for(int i=1;i<=x;i++){
+				y.rid();
+				slots.push_back(y);
+			}
+		}
+	}tpltvlt,tempvlt;
+	struct ivtr{
+		slot hand;
+		vult hcl;
+		slot cp;
+		vector<vult> vaults;
+		int weight=0;
+		void rfwt(){ //refresh weight
+			int totwt=hand.weight();
+			for(vult vt:vaults){
+				totwt+=vt.weight();
+			}
+			totwt+=hcl.weight();
+			totwt+=cp.weight();
+			weight=totwt;
+		}
+		void refresh(){
+			for(unsigned i=0;i<vaults.size();i++){
+				vaults[i].refresh();
+			}
+			hand.refresh();
+			hcl.refresh();
+			cp.refresh();
+		}
+		void wi(){//write inventory
+			out<<endl;
+			hand.wrt();
+			hcl.wrt();
+			cp.wrt();
+			out<<" "<<vaults.size()<<" ";
+			for(unsigned i=0;i<vaults.size();i++){
+				vaults[i].wrt();
+			}
+		}
+		void ri(){
+			hand.rid();
+			hcl.rid();
+			cp.rid();
+			int x;
+			vult y;
+			in>>x;
+			for(int i=1;i<=x;i++){
+				y.rid();
+				vaults.push_back(y);
+			}
+		}
+	}inventory;
+	int ivtrmx; //max weight
+	bool slotcmp(slot x,slot y){
+		return x.item>y.item;
+	}
+	void itemsystem(bool showtempvlt=0){
+		anicls();
+		setpos(0,0);
+		int vps=0;
+		slot hcl[10],cp;
+		ing usingin(0,0,0,0,0,0,0,0,0,0,0);
+		char _1='?',_2='?';
+		for(int i=0;i<10;i++) hcl[i]=tpltslt;
+		while(1){
+			setpos(0,0);
+			cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
+			for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
+				if(_1==char(i+'1')) scta(6);else scta(15);
+				cout<<"第"<<i+1<<"个物品槽:             "<<
+				itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
+				inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
+				detect(char(i+'1')){
+					if(_1!=char(i+'1')){
+						if(_1!='?') _2=char(i+'1');
+						else _1=char(i+'1');
 					}
 				}
 			}
-		}
-		cout<<endl;
-		for(unsigned i=0;i<inventory.hcl.slots.size();i++){
-			if(_1==char(i+'X')) scta(6);else scta(15);
-			cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
-			itemname[inventory.hcl.slots[i].item]<<"x"<<
-			inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
-			detect(char(i+'X')){
-				if(_1!=char(i+'X')){
-					if(_1!='?') _2=char(i+'X');
-					else _1=char(i+'X');
+			if(showtempvlt){
+				scta(15);
+				cout<<"\n地上(退出界面后消失):            \n";
+				for(unsigned i=0;i<tempvlt.slots.size();i++){
+					if(_1==char(i+'I')) scta(6);else scta(15);
+					cout<<"第"<<i+1<<"个物品:            "<<
+					itemname[tempvlt.slots[i].item]<<"x"<<
+					tempvlt.slots[i].qutt<<"["<<char(i+'I')<<"]            \n";
+					detect(char(i+'I')){
+						if(_1!=char(i+'I')){
+							if(_1!='?') _2=char(i+'I');
+							else _1=char(i+'I');
+						}
+					}
 				}
 			}
-		}
-		scta(8);
-		cout<<"预估成品："<<itemname[cp.item]<<"x"<<cp.qutt<<"            \n";
-		if(_1=='C') scta(6);else scta(15);
-		cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
-		detect('C'){
-			if(_1!='C'){
-				if(_1!='?') _2='C';
-				else _1='C';
+			cout<<endl;
+			for(unsigned i=0;i<inventory.hcl.slots.size();i++){
+				if(_1==char(i+'X')) scta(6);else scta(15);
+				cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
+				itemname[inventory.hcl.slots[i].item]<<"x"<<
+				inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
+				detect(char(i+'X')){
+					if(_1!=char(i+'X')){
+						if(_1!='?') _2=char(i+'X');
+						else _1=char(i+'X');
+					}
+				}
 			}
-		}
-		if(_1=='H') scta(6);else scta(15);
-		cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
-		detect('H'){
-			if(_1!='H'){
-				if(_1!='?') _2='H';
-				else _1='H';
+			scta(8);
+			cout<<"预估成品："<<itemname[cp.item]<<"x"<<cp.qutt<<"            \n";
+			if(_1=='C') scta(6);else scta(15);
+			cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
+			detect('C'){
+				if(_1!='C'){
+					if(_1!='?') _2='C';
+					else _1='C';
+				}
 			}
-		}
-		scta(15);
-		
-		if(_1=='?') cout<<"按Q退出,按W合成,或按下按键执行操作                        ";
-		else        cout<<"按E丢掉,按R撤回,或按下另一个按键执行交换、堆叠操作        ";
-		
-		if(_1!='?'&&_2!='?'){
-			//first, _1->tempslt
-			if(_1>='1'&&_1<='9'){
-				tempslt.item=inventory.vaults[vps].slots[_1-'1'].item;
-				tempslt.qutt=inventory.vaults[vps].slots[_1-'1'].qutt;
+			if(_1=='H') scta(6);else scta(15);
+			cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
+			detect('H'){
+				if(_1!='H'){
+					if(_1!='?') _2='H';
+					else _1='H';
+				}
 			}
-			if(_1>='I'&&_1<='M'){
-				tempslt.item=tempvlt.slots[_1-'I'].item;
-				tempslt.qutt=tempvlt.slots[_1-'I'].qutt;
-			}
-			if(_1>='X'&&_1<='Z'){
-				tempslt.item=inventory.hcl.slots[_1-'X'].item;
-				tempslt.qutt=inventory.hcl.slots[_1-'X'].qutt;
-			}
-			if(_1=='C'){
-				tempslt.item=inventory.cp.item;
-				tempslt.qutt=inventory.cp.qutt;
-			}
-			if(_1=='H'){
-				tempslt.item=inventory.hand.item;
-				tempslt.qutt=inventory.hand.qutt;
-			}
-			//second, _2->tempslot
-			if(_2>='1'&&_2<='9'){
-				tempslot.item=inventory.vaults[vps].slots[_2-'1'].item;
-				tempslot.qutt=inventory.vaults[vps].slots[_2-'1'].qutt;
-			}
-			if(_2>='I'&&_2<='M'){
-				tempslot.item=tempvlt.slots[_2-'I'].item;
-				tempslot.qutt=tempvlt.slots[_2-'I'].qutt;
-			}
-			if(_2>='X'&&_2<='Z'){
-				tempslot.item=inventory.hcl.slots[_2-'X'].item;
-				tempslot.qutt=inventory.hcl.slots[_2-'X'].qutt;
-			}
-			if(_2=='C'){
-				tempslot.item=inventory.cp.item;
-				tempslot.qutt=inventory.cp.qutt;
-			}
-			if(_2=='H'){
-				tempslot.item=inventory.hand.item;
-				tempslot.qutt=inventory.hand.qutt;
-			}
+			scta(15);
 			
-			//One more thing...
-			if(tempslt.item==tempslot.item){
+			if(_1=='?') cout<<"按Q退出,按W合成,或按下按键执行操作                 \n                                     ";
+			else        cout<<"按E丢掉,按R撤回,或按下另一个按键执行交换、堆叠操作,\n同时按下Tab分割一半,按下Shift分割一个";
+			
+			if(_1!='?'&&_2!='?'){
+				//first, _1->tempslt
+				if(_1>='1'&&_1<='9'){
+					tempslt.item=inventory.vaults[vps].slots[_1-'1'].item;
+					tempslt.qutt=inventory.vaults[vps].slots[_1-'1'].qutt;
+				}
+				if(_1>='I'&&_1<='M'){
+					tempslt.item=tempvlt.slots[_1-'I'].item;
+					tempslt.qutt=tempvlt.slots[_1-'I'].qutt;
+				}
+				if(_1>='X'&&_1<='Z'){
+					tempslt.item=inventory.hcl.slots[_1-'X'].item;
+					tempslt.qutt=inventory.hcl.slots[_1-'X'].qutt;
+				}
+				if(_1=='C'){
+					tempslt.item=inventory.cp.item;
+					tempslt.qutt=inventory.cp.qutt;
+				}
+				if(_1=='H'){
+					tempslt.item=inventory.hand.item;
+					tempslt.qutt=inventory.hand.qutt;
+				}
+				//second, _2->tempslot
 				if(_2>='1'&&_2<='9'){
-					inventory.vaults[vps].slots[_2-'1'].qutt+=tempslt.qutt;
+					tempslot.item=inventory.vaults[vps].slots[_2-'1'].item;
+					tempslot.qutt=inventory.vaults[vps].slots[_2-'1'].qutt;
 				}
 				if(_2>='I'&&_2<='M'){
-					tempvlt.slots[_2-'I'].qutt+=tempslt.qutt;
+					tempslot.item=tempvlt.slots[_2-'I'].item;
+					tempslot.qutt=tempvlt.slots[_2-'I'].qutt;
 				}
 				if(_2>='X'&&_2<='Z'){
-					inventory.hcl.slots[_2-'X'].qutt+=tempslt.qutt;
+					tempslot.item=inventory.hcl.slots[_2-'X'].item;
+					tempslot.qutt=inventory.hcl.slots[_2-'X'].qutt;
 				}
 				if(_2=='C'){
-					inventory.cp.qutt+=tempslt.qutt;
+					tempslot.item=inventory.cp.item;
+					tempslot.qutt=inventory.cp.qutt;
 				}
 				if(_2=='H'){
-					inventory.hand.qutt+=tempslt.qutt;
+					tempslot.item=inventory.hand.item;
+					tempslot.qutt=inventory.hand.qutt;
 				}
 				
+				//One more thing...
+				if(tempslt.item==tempslot.item){
+					detect(VK_TAB){
+						int __1=tempslt.qutt/2;
+						int __2=tempslt.qutt-__1;
+						if(_2>='1'&&_2<='9'){
+							inventory.vaults[vps].slots[_2-'1'].qutt+=__2;
+						}
+						if(_2>='I'&&_2<='M'){
+							tempvlt.slots[_2-'I'].qutt+=__2;
+						}
+						if(_2>='X'&&_2<='Z'){
+							inventory.hcl.slots[_2-'X'].qutt+=__2;
+						}
+						if(_2=='C'){
+							inventory.cp.qutt+=__2;
+						}
+						if(_2=='H'){
+							inventory.hand.qutt+=__2;
+						}
+						
+						if(_1>='1'&&_1<='9'){
+							inventory.vaults[vps].slots[_1-'1'].qutt=__1;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempvlt.slots[_1-'I'].qutt=__1;
+						}
+						if(_1>='X'&&_1<='Z'){
+							inventory.hcl.slots[_1-'X'].qutt=__1;
+						}
+						if(_1=='C'){
+							inventory.cp.qutt=__1;
+						}
+						if(_1=='H'){
+							inventory.hand.qutt=__1;
+						}
+					}else detect(VK_SHIFT){
+						if(_2>='1'&&_2<='9'){
+							inventory.vaults[vps].slots[_2-'1'].qutt++;
+						}
+						if(_2>='I'&&_2<='M'){
+							tempvlt.slots[_2-'I'].qutt++;
+						}
+						if(_2>='X'&&_2<='Z'){
+							inventory.hcl.slots[_2-'X'].qutt++;
+						}
+						if(_2=='C'){
+							inventory.cp.qutt++;
+						}
+						if(_2=='H'){
+							inventory.hand.qutt++;
+						}
+						
+						if(_1>='1'&&_1<='9'){
+							inventory.vaults[vps].slots[_1-'1'].qutt--;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempvlt.slots[_1-'I'].qutt--;
+						}
+						if(_1>='X'&&_1<='Z'){
+							inventory.hcl.slots[_1-'X'].qutt--;
+						}
+						if(_1=='C'){
+							inventory.cp.qutt--;
+						}
+						if(_1=='H'){
+							inventory.hand.qutt--;
+						}
+					}else{
+						if(_2>='1'&&_2<='9'){
+							inventory.vaults[vps].slots[_2-'1'].qutt+=tempslt.qutt;
+						}
+						if(_2>='I'&&_2<='M'){
+							tempvlt.slots[_2-'I'].qutt+=tempslt.qutt;
+						}
+						if(_2>='X'&&_2<='Z'){
+							inventory.hcl.slots[_2-'X'].qutt+=tempslt.qutt;
+						}
+						if(_2=='C'){
+							inventory.cp.qutt+=tempslt.qutt;
+						}
+						if(_2=='H'){
+							inventory.hand.qutt+=tempslt.qutt;
+						}
+						
+						if(_1>='1'&&_1<='9'){
+							inventory.vaults[vps].slots[_1-'1'].item=0;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempvlt.slots[_1-'I'].item=0;
+						}
+						if(_1>='X'&&_1<='Z'){
+							inventory.hcl.slots[_1-'X'].item=0;
+						}
+						if(_1=='C'){
+							inventory.cp.item=0;
+						}
+						if(_1=='H'){
+							inventory.hand.item=0;
+						}
+					}
+					inventory.refresh();
+					while(press(_2));
+					_1='?';
+					_2='?';
+					goto testforhecheng;
+				}
+				
+				//Two more things...
+				if(tempslot.item==0){
+					detect(VK_TAB){
+						int __1=tempslt.qutt/2;
+						int __2=tempslt.qutt-__1;
+						tempslot.item=tempslt.item;
+						
+						if(_2>='1'&&_2<='9'){
+							inventory.vaults[vps].slots[_2-'1'].qutt=__2;
+							inventory.vaults[vps].slots[_2-'1'].item=tempslt.item;
+						}
+						if(_2>='I'&&_2<='M'){
+							tempvlt.slots[_2-'I'].qutt=__2;
+							tempvlt.slots[_2-'I'].item=tempslt.item;
+						}
+						if(_2>='X'&&_2<='Z'){
+							inventory.hcl.slots[_2-'X'].qutt=__2;
+							inventory.hcl.slots[_2-'X'].item=tempslt.item;
+						}
+						if(_2=='C'){
+							inventory.cp.qutt=__2;
+							inventory.cp.item=tempslt.item;
+						}
+						if(_2=='H'){
+							inventory.hand.qutt=__2;
+							inventory.hand.item=tempslt.item;
+						}
+						
+						if(_1>='1'&&_1<='9'){
+							inventory.vaults[vps].slots[_1-'1'].qutt=__1;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempvlt.slots[_1-'I'].qutt=__1;
+						}
+						if(_1>='X'&&_1<='Z'){
+							inventory.hcl.slots[_1-'X'].qutt=__1;
+						}
+						if(_1=='C'){
+							inventory.cp.qutt=__1;
+						}
+						if(_1=='H'){
+							inventory.hand.qutt=__1;
+						}
+						inventory.refresh();
+						while(press(_2));
+						_1='?';
+						_2='?';
+						goto testforhecheng;
+					}
+					
+					detect(VK_SHIFT){
+						tempslot.item=tempslt.item;
+						
+						if(_2>='1'&&_2<='9'){
+							inventory.vaults[vps].slots[_2-'1'].qutt=1;
+							inventory.vaults[vps].slots[_2-'1'].item=tempslt.item;
+						}
+						if(_2>='I'&&_2<='M'){
+							tempvlt.slots[_2-'I'].qutt=1;
+							tempvlt.slots[_2-'I'].item=tempslt.item;
+						}
+						if(_2>='X'&&_2<='Z'){
+							inventory.hcl.slots[_2-'X'].qutt=1;
+							inventory.hcl.slots[_2-'X'].item=tempslt.item;
+						}
+						if(_2=='C'){
+							inventory.cp.qutt=1;
+							inventory.cp.item=tempslt.item;
+						}
+						if(_2=='H'){
+							inventory.hand.qutt=1;
+							inventory.hand.item=tempslt.item;
+						}
+						
+						if(_1>='1'&&_1<='9'){
+							inventory.vaults[vps].slots[_1-'1'].qutt--;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempvlt.slots[_1-'I'].qutt--;
+						}
+						if(_1>='X'&&_1<='Z'){
+							inventory.hcl.slots[_1-'X'].qutt--;
+						}
+						if(_1=='C'){
+							inventory.cp.qutt--;
+						}
+						if(_1=='H'){
+							inventory.hand.qutt--;
+						}
+						inventory.refresh();
+						while(press(_2));
+						_1='?';
+						_2='?';
+						goto testforhecheng;
+					}
+				}
+				
+				//third, tempslot->_1
+				if(_1>='1'&&_1<='9'){
+					inventory.vaults[vps].slots[_1-'1'].item=tempslot.item;
+					inventory.vaults[vps].slots[_1-'1'].qutt=tempslot.qutt;
+				}
+				if(_1>='I'&&_1<='M'){
+					tempvlt.slots[_1-'I'].item=tempslot.item;
+					tempvlt.slots[_1-'I'].qutt=tempslot.qutt;
+				}
+				if(_1>='X'&&_1<='Z'){
+					inventory.hcl.slots[_1-'X'].item=tempslot.item;
+					inventory.hcl.slots[_1-'X'].qutt=tempslot.qutt;
+				}
+				if(_1=='C'){
+					inventory.cp.item=tempslot.item;
+					inventory.cp.qutt=tempslot.qutt;
+				}
+				if(_1=='H'){
+					inventory.hand.item=tempslot.item;
+					inventory.hand.qutt=tempslot.qutt;
+				}
+				//last, tempslt->_2
+				if(_2>='1'&&_2<='9'){
+					inventory.vaults[vps].slots[_2-'1'].item=tempslt.item;
+					inventory.vaults[vps].slots[_2-'1'].qutt=tempslt.qutt;
+				}
+				if(_2>='I'&&_2<='M'){
+					tempvlt.slots[_2-'I'].item=tempslt.item;
+					tempvlt.slots[_2-'I'].qutt=tempslt.qutt;
+				}
+				if(_2>='X'&&_2<='Z'){
+					inventory.hcl.slots[_2-'X'].item=tempslt.item;
+					inventory.hcl.slots[_2-'X'].qutt=tempslt.qutt;
+				}
+				if(_2=='C'){
+					inventory.cp.item=tempslt.item;
+					inventory.cp.qutt=tempslt.qutt;
+				}
+				if(_2=='H'){
+					inventory.hand.item=tempslt.item;
+					inventory.hand.qutt=tempslt.qutt;
+				}
+				while(press(_2));
+				_1='?';
+				_2='?';
+				
+				goto testforhecheng;
+			}
+			
+			if(_1!='?'&&press('E')){
 				if(_1>='1'&&_1<='9'){
 					inventory.vaults[vps].slots[_1-'1'].item=0;
 				}
@@ -596,1002 +835,935 @@ void itemsystem(bool showtempvlt=0){
 					inventory.hand.item=0;
 				}
 				inventory.refresh();
+				_1='?';
 				goto testforhecheng;
 			}
 			
-			//third, tempslot->_1
-			if(_1>='1'&&_1<='9'){
-				inventory.vaults[vps].slots[_1-'1'].item=tempslot.item;
-				inventory.vaults[vps].slots[_1-'1'].qutt=tempslot.qutt;
+			if(0){
+				testforhecheng:;
+				inventory.refresh();
+				hcl[1]=inventory.hcl.slots[0];
+				hcl[2]=inventory.hcl.slots[1];
+				hcl[3]=inventory.hcl.slots[2];
+				sort(hcl+1,hcl+1+3,slotcmp);
+				for(ing in:ings){
+					if(!in.unlock) continue;
+					if(in.item1!=hcl[1].item||in.num1>hcl[1].qutt) continue;else;
+					if(in.have2)
+						if(in.item2!=hcl[2].item||in.num2>hcl[2].qutt) continue;else;
+					else if(hcl[2].item!=0) continue;
+					if(in.have3)
+						if(in.item3!=hcl[2].item||in.num3>hcl[3].qutt) continue;else;
+					else if(hcl[3].item!=0) continue;
+					cp.item=in.dest;
+					cp.qutt=in.num;
+					usingin=in;
+					goto updatedchengping;
+				}
+				cp.item=0;
+				cp.qutt=0;
+				usingin=ing(0,0,0,0,0,0,0,0,0,0,0);
+				updatedchengping:;
 			}
-			if(_1>='I'&&_1<='M'){
-				tempvlt.slots[_1-'I'].item=tempslot.item;
-				tempvlt.slots[_1-'I'].qutt=tempslot.qutt;
-			}
-			if(_1>='X'&&_1<='Z'){
-				inventory.hcl.slots[_1-'X'].item=tempslot.item;
-				inventory.hcl.slots[_1-'X'].qutt=tempslot.qutt;
-			}
-			if(_1=='C'){
-				inventory.cp.item=tempslot.item;
-				inventory.cp.qutt=tempslot.qutt;
-			}
-			if(_1=='H'){
-				inventory.hand.item=tempslot.item;
-				inventory.hand.qutt=tempslot.qutt;
-			}
-			//last, tempslt->_2
-			if(_2>='1'&&_2<='9'){
-				inventory.vaults[vps].slots[_2-'1'].item=tempslt.item;
-				inventory.vaults[vps].slots[_2-'1'].qutt=tempslt.qutt;
-			}
-			if(_2>='I'&&_2<='M'){
-				tempvlt.slots[_2-'I'].item=tempslt.item;
-				tempvlt.slots[_2-'I'].qutt=tempslt.qutt;
-			}
-			if(_2>='X'&&_2<='Z'){
-				inventory.hcl.slots[_2-'X'].item=tempslt.item;
-				inventory.hcl.slots[_2-'X'].qutt=tempslt.qutt;
-			}
-			if(_2=='C'){
-				inventory.cp.item=tempslt.item;
-				inventory.cp.qutt=tempslt.qutt;
-			}
-			if(_2=='H'){
-				inventory.hand.item=tempslt.item;
-				inventory.hand.qutt=tempslt.qutt;
-			}
-			while(press(_2));
-			_1='?';
-			_2='?';
 			
-			goto testforhecheng;
-		}
-		
-		if(_1!='?'&&press('E')){
-			if(_1>='1'&&_1<='9'){
-				inventory.vaults[vps].slots[_1-'1'].item=0;
-			}
-			if(_1>='I'&&_1<='M'){
-				tempvlt.slots[_1-'I'].item=0;
-			}
-			if(_1>='X'&&_1<='Z'){
-				inventory.hcl.slots[_1-'X'].item=0;
-			}
-			if(_1=='C'){
-				inventory.cp.item=0;
-			}
-			if(_1=='H'){
-				inventory.hand.item=0;
-			}
-			inventory.refresh();
-			_1='?';
-			goto testforhecheng;
-		}
-		
-		if(0){
-			testforhecheng:;
-			inventory.refresh();
-			hcl[1]=inventory.hcl.slots[0];
-			hcl[2]=inventory.hcl.slots[1];
-			hcl[3]=inventory.hcl.slots[2];
-			sort(hcl+1,hcl+1+3,slotcmp);
-			for(ing in:ings){
-				if(!in.unlock) continue;
-				if(in.item1!=hcl[1].item||in.num1>hcl[1].qutt) continue;else;
-				if(in.have2)
-				if(in.item2!=hcl[2].item||in.num2>hcl[2].qutt) continue;else;
-				else if(hcl[2].item!=0) continue;
-				if(in.have3)
-				if(in.item3!=hcl[2].item||in.num3>hcl[3].qutt) continue;else;
-				else if(hcl[3].item!=0) continue;
-				cp.item=in.dest;
-				cp.qutt=in.num;
-				usingin=in;
-				goto updatedchengping;
-			}
-			cp.item=0;
-			cp.qutt=0;
-			usingin=ing(0,0,0,0,0,0,0,0,0,0,0);
-			updatedchengping:;
-		}
-		
-		detect('W'){
-			inventory.refresh();
-			if(inventory.cp.item==0||inventory.cp.item==cp.item){
-				for(int i=0;i<=2;i++){
-					if(inventory.hcl.slots[i].item==usingin.item1){
-						inventory.hcl.slots[i].qutt-=usingin.num1;
-					}else if(inventory.hcl.slots[i].item==usingin.item2){
-						if(usingin.have2){
-							inventory.hcl.slots[i].qutt-=usingin.num2;
-						}
-					}else if(inventory.hcl.slots[i].item==usingin.item3){
-						if(usingin.have3){
-							inventory.hcl.slots[i].qutt-=usingin.num3;
+			detect('W'){
+				inventory.refresh();
+				if(inventory.cp.item==0||inventory.cp.item==cp.item){
+					for(int i=0;i<=2;i++){
+						if(inventory.hcl.slots[i].item==usingin.item1){
+							inventory.hcl.slots[i].qutt-=usingin.num1;
+						}else if(inventory.hcl.slots[i].item==usingin.item2){
+							if(usingin.have2){
+								inventory.hcl.slots[i].qutt-=usingin.num2;
+							}
+						}else if(inventory.hcl.slots[i].item==usingin.item3){
+							if(usingin.have3){
+								inventory.hcl.slots[i].qutt-=usingin.num3;
+							}
 						}
 					}
+					if(inventory.cp.item==0) inventory.cp=cp;
+					else inventory.cp.qutt+=cp.qutt;
+					while(press('W'));
+					goto testforhecheng;
 				}
-				if(inventory.cp.item==0) inventory.cp=cp;
-				else inventory.cp.qutt+=cp.qutt;
-				while(press('W'));
-				goto testforhecheng;
+			}
+			if(_1!='?'&&press('R')) _1='?';
+			
+			detect('Q'){
+				break;
+			}
+			detect(','){
+				vps=(vps-1+vps)%inventory.vaults.size();
+				Sleep(100);
+			}
+			detect('.'){
+				vps=(vps+1)%inventory.vaults.size();
+				Sleep(100);
 			}
 		}
-		if(_1!='?'&&press('R')) _1='?';
-		
-		detect('Q'){
-			break;
-		}
-		detect(','){
-			vps=(vps-1+vps)%inventory.vaults.size();
-			Sleep(100);
-		}
-		detect('.'){
-			vps=(vps+1)%inventory.vaults.size();
-			Sleep(100);
-		}
+	}
+	void takeanitem(int item,int qutt=1){
+		tempvlt=tpltvlt;
+		tempvlt.name="地上(退出界面后消失)";
+		tempvlt.slots.push_back(tpltslt);
+		tempvlt.slots[0].item=item;
+		tempvlt.slots[0].qutt=qutt;
+		itemsystem(1);
 	}
 }
-void takeanitem(int item,int qutt=1){
-	tempvlt=tpltvlt;
-	tempvlt.name="地上(退出界面后消失)";
-	tempvlt.slots.push_back(tpltslt);
-	tempvlt.slots[0].item=item;
-	tempvlt.slots[0].qutt=qutt;
-	itemsystem(1);
-}
-}
 extern "C++"{//游戏内使用函数
-void weijipedia() {
-	anicls();
-	system("cls");
-	setpos(0, 0);
-	cout << "                    \n";
-	cout << "      喂鸡百科      \n";
-	cout << "                    \n";
-	cout << "*查看地块----------Q\n";
-	cout << "*查看物品及配方----W\n";
-	cout << "*查看生物----------E\n";
-	cout << "*查看键位----------R\n";
-	cout << "*查看效果----------T\n";
-	cout << "*版权声明----------Y\n";
-	cout << "*退出--------------U\n";
-	while (1) {
-		detect('Q') {
-			anicls();
-			
-			bool decide = 0;
-			while (1) {
-				setpos(0, 0);
-				scta(0xF);
-				if (!decide)
-					scta(0xE);
-				cout << "查看脚下地块" << endl;
-				scta(0xF);
-				if (decide)
-					scta(0xE);
-				cout << "查看所有地块" << endl;
-				scta(0xD);
-				cout << "空格选择，Q确定" << endl;
-				detect(VK_SPACE) {
-					decide = !decide;
-					Sleep(100);
-				}
-				detect('Q') {
-					if (decide) {
-						anicls();
-						for (unsigned i = 0; i < WBlist.size(); i++) {
+	void weijipedia() {
+		anicls();
+		system("cls");
+		setpos(0, 0);
+		cout << "                    \n";
+		cout << "      喂鸡百科      \n";
+		cout << "                    \n";
+		cout << "*查看地块----------Q\n";
+		cout << "*查看物品及配方----W\n";
+		cout << "*查看生物----------E\n";
+		cout << "*查看键位----------R\n";
+		cout << "*查看效果----------T\n";
+		cout << "*版权声明----------Y\n";
+		cout << "*退出--------------U\n";
+		while (1) {
+			detect('Q') {
+				anicls();
+				
+				bool decide = 0;
+				while (1) {
+					setpos(0, 0);
+					scta(0xF);
+					if (!decide)
+						scta(0xE);
+					cout << "查看脚下地块" << endl;
+					scta(0xF);
+					if (decide)
+						scta(0xE);
+					cout << "查看所有地块" << endl;
+					scta(0xD);
+					cout << "空格选择，Q确定" << endl;
+					detect(VK_SPACE) {
+						decide = !decide;
+						Sleep(100);
+					}
+					detect('Q') {
+						if (decide) {
+							anicls();
+							for (unsigned i = 0; i < WBlist.size(); i++) {
+								setpos(0, 0);
+								scta(color[WBlist[i]]);
+								for (int a = 0; a < 5; a++) {
+									for (int b = 0; b < 9; b++) {
+										cout << WBlist[i];
+									}
+									cout << endl;
+								}
+								scta(0xF);
+								cout << WBname[WBlist[i]] << endl
+								<< WBintro[WBlist[i]] << endl
+								<< "按空格下一个，按Q继续游戏";
+								while (1) {
+									detect(VK_SPACE) { break; }
+									detect('Q') {
+										anicls();
+										return;
+									}
+								}
+								anicls();
+							}
+						} else {
+							anicls();
+							char i = world[posy][posx];
 							setpos(0, 0);
-							scta(color[WBlist[i]]);
+							scta(color[i]);
 							for (int a = 0; a < 5; a++) {
 								for (int b = 0; b < 9; b++) {
-									cout << WBlist[i];
+									cout << i;
 								}
 								cout << endl;
 							}
 							scta(0xF);
-							cout << WBname[WBlist[i]] << endl
-							<< WBintro[WBlist[i]] << endl
-							<< "按空格下一个，按Q继续游戏";
+							cout << WBname[i] << endl << WBintro[i] << endl << "按Q继续游戏";
 							while (1) {
-								detect(VK_SPACE) { break; }
 								detect('Q') {
 									anicls();
 									return;
 								}
 							}
+						}
+					}
+				}
+			}
+			detect('R') {
+				anicls();
+				int pntx = 4, pnty = 2;
+				while (1) {
+					setpos(0, 0);
+					for (int i = 1; i <= 13; i++) {
+						for (int j = 0; j < keyboard[i].size(); j++) {
+							if (i == pnty && j == pntx)
+								scta(0xF6);
+							if (keyboard[i][j] == '|')
+								scta(0xF);
+							cout << keyboard[i][j];
+						}
+					}
+					detects(VK_UP, 'W') {
+						pnty -= 2;
+						pntx = 1;
+						Sleep(30);
+					}
+					if (pnty < 2)
+						pnty = 2;
+					detects(VK_DOWN, 'S') {
+						pnty += 2;
+						pntx = 1;
+						Sleep(30);
+					}
+					if (pnty > 12)
+						pnty = 12;
+					detects(VK_LEFT, 'A') {
+						pntx--;
+						while (keyboard[pnty][--pntx] != '|')
+							;
+						pntx++;
+						Sleep(30);
+					}
+					if (pntx < 1)
+						pntx = 1;
+					detects(VK_RIGHT, 'D') {
+						while (keyboard[pnty][++pntx] != '|')
+							;
+						pntx++;
+						Sleep(30);
+					}
+					if (pntx > keyboard[1].size() - 4)
+						pntx = keyboard[1].size() - 4;
+					if (pntx == 8 && pnty == 6) {
+						cout << "W:向上走";
+					} else if (pntx == 6 && pnty == 8) {
+						cout << "A:向左走";
+					} else if (pntx == 9 && pnty == 8) {
+						cout << "S:向下走";
+					} else if (pntx == 12 && pnty == 8) {
+						cout << "D:向右走";
+					} else if (pntx == 48 && pnty == 8) {
+						cout << "↑:向上走";
+					} else if (pntx == 45 && pnty == 10) {
+						cout << "←:向左走";
+					} else if (pntx == 48 && pnty == 10) {
+						cout << "↓:向下走";
+					} else if (pntx == 51 && pnty == 10) {
+						cout << "→:向右走";
+					} else if (pntx == 5 && pnty == 6) {
+						cout << "Q:丢弃手上物品(已移除)";
+					} else if (pntx == 11 && pnty == 6) {
+						cout << "E:使用手上物品";
+					} else if (pntx == 14 && pnty == 6) {
+						cout << "R:物品系统(合成物品)";
+					} else if (pntx == 32 && pnty == 6) {
+						cout << "P:与地块交互";
+					} else if (pntx == 7 && pnty == 10) {
+						cout << "Z:查看喂鸡百科";
+					} else if (pntx == 45 && pnty == 12) {
+						cout << "按下空格回到游戏";
+						detect(VK_SPACE) {
 							anicls();
+							return;
 						}
-					} else {
-						anicls();
-						char i = world[posy][posx];
-						setpos(0, 0);
-						scta(color[i]);
-						for (int a = 0; a < 5; a++) {
-							for (int b = 0; b < 9; b++) {
-								cout << i;
-							}
-							cout << endl;
-						}
-						scta(0xF);
-						cout << WBname[i] << endl << WBintro[i] << endl << "按Q继续游戏";
-						while (1) {
-							detect('Q') {
-								anicls();
-								return;
-							}
-						}
+					} else if (pntx == 4 && pnty == 4) {
+						cout << "1:指向背包的第1个物品";
+					} else if (pntx == 7 && pnty == 4) {
+						cout << "2:指向背包的第2个物品";
+					} else if (pntx == 10 && pnty == 4) {
+						cout << "3:指向背包的第3个物品";
+					} else if (pntx == 13 && pnty == 4) {
+						cout << "4:指向背包的第4个物品";
+					} else if (pntx == 16 && pnty == 4) {
+						cout << "5:指向背包的第5个物品";
+					} else if (pntx == 19 && pnty == 4) {
+						cout << "6:指向背包的第6个物品";
+					} else if (pntx == 22 && pnty == 4) {
+						cout << "7:指向背包的第7个物品";
+					} else if (pntx == 25 && pnty == 4) {
+						cout << "8:指向背包的第8个物品";
+					} else if (pntx == 28 && pnty == 4) {
+						cout << "9:指向背包的第9个物品";
+					} else if (pntx == 31 && pnty == 4) {
+						cout << "0:指向背包的第10个物品";
+					} else if (pntx == 1 && pnty == 1) {
+						cout << "Escape:打开菜单";
 					}
+					
+					else {
+						cout << "按WASD或方向键选择要查看的键位";
+					}
+					cout << "                                            ";
 				}
 			}
-		}
-		detect('R') {
-			anicls();
-			int pntx = 4, pnty = 2;
-			while (1) {
-				setpos(0, 0);
-				for (int i = 1; i <= 13; i++) {
-					for (int j = 0; j < keyboard[i].size(); j++) {
-						if (i == pnty && j == pntx)
-							scta(0xF6);
-						if (keyboard[i][j] == '|')
-							scta(0xF);
-						cout << keyboard[i][j];
-					}
-				}
-				detects(VK_UP, 'W') {
-					pnty -= 2;
-					pntx = 1;
-					Sleep(30);
-				}
-				if (pnty < 2)
-					pnty = 2;
-				detects(VK_DOWN, 'S') {
-					pnty += 2;
-					pntx = 1;
-					Sleep(30);
-				}
-				if (pnty > 12)
-					pnty = 12;
-				detects(VK_LEFT, 'A') {
-					pntx--;
-					while (keyboard[pnty][--pntx] != '|')
-						;
-					pntx++;
-					Sleep(30);
-				}
-				if (pntx < 1)
-					pntx = 1;
-				detects(VK_RIGHT, 'D') {
-					while (keyboard[pnty][++pntx] != '|')
-						;
-					pntx++;
-					Sleep(30);
-				}
-				if (pntx > keyboard[1].size() - 4)
-					pntx = keyboard[1].size() - 4;
-				if (pntx == 8 && pnty == 6) {
-					cout << "W:向上走";
-				} else if (pntx == 6 && pnty == 8) {
-					cout << "A:向左走";
-				} else if (pntx == 9 && pnty == 8) {
-					cout << "S:向下走";
-				} else if (pntx == 12 && pnty == 8) {
-					cout << "D:向右走";
-				} else if (pntx == 48 && pnty == 8) {
-					cout << "↑:向上走";
-				} else if (pntx == 45 && pnty == 10) {
-					cout << "←:向左走";
-				} else if (pntx == 48 && pnty == 10) {
-					cout << "↓:向下走";
-				} else if (pntx == 51 && pnty == 10) {
-					cout << "→:向右走";
-				} else if (pntx == 5 && pnty == 6) {
-					cout << "Q:丢弃手上物品(已移除)";
-				} else if (pntx == 11 && pnty == 6) {
-					cout << "E:使用手上物品";
-				} else if (pntx == 14 && pnty == 6) {
-					cout << "R:物品系统(合成物品)";
-				} else if (pntx == 32 && pnty == 6) {
-					cout << "P:与地块交互";
-				} else if (pntx == 7 && pnty == 10) {
-					cout << "Z:查看喂鸡百科";
-				} else if (pntx == 45 && pnty == 12) {
-					cout << "按下空格回到游戏";
-					detect(VK_SPACE) {
-						anicls();
-						return;
-					}
-				} else if (pntx == 4 && pnty == 4) {
-					cout << "1:指向背包的第1个物品";
-				} else if (pntx == 7 && pnty == 4) {
-					cout << "2:指向背包的第2个物品";
-				} else if (pntx == 10 && pnty == 4) {
-					cout << "3:指向背包的第3个物品";
-				} else if (pntx == 13 && pnty == 4) {
-					cout << "4:指向背包的第4个物品";
-				} else if (pntx == 16 && pnty == 4) {
-					cout << "5:指向背包的第5个物品";
-				} else if (pntx == 19 && pnty == 4) {
-					cout << "6:指向背包的第6个物品";
-				} else if (pntx == 22 && pnty == 4) {
-					cout << "7:指向背包的第7个物品";
-				} else if (pntx == 25 && pnty == 4) {
-					cout << "8:指向背包的第8个物品";
-				} else if (pntx == 28 && pnty == 4) {
-					cout << "9:指向背包的第9个物品";
-				} else if (pntx == 31 && pnty == 4) {
-					cout << "0:指向背包的第10个物品";
-				} else if (pntx == 1 && pnty == 1) {
-					cout << "Escape:打开菜单";
-				}
-				
-				else {
-					cout << "按WASD或方向键选择要查看的键位";
-				}
-				cout << "                                            ";
-			}
-		}
-		detect('W') {
-			anicls();
-			setpos(0,0);
-			int vps=0;
-			bool sysclr=0;
-			char _1='?';
-			while(1){
+			detect('W') {
+				anicls();
 				setpos(0,0);
-				scta(7);
-				cout<<"按ESC退出\n";
-				scta(15);
-				cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
-				for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
-					if(_1==char(i+'1')) scta(6);else scta(15);
-					cout<<"第"<<i+1<<"个物品槽:             "<<
-					itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
-					inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
-					detect(char(i+'1')){
-						_1=char(i+'1');
-						sysclr=1;
-					}
-				}
-				cout<<endl;
-				for(unsigned i=0;i<inventory.hcl.slots.size();i++){
-					if(_1==char(i+'X')) scta(6);else scta(15);
-					cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
-					itemname[inventory.hcl.slots[i].item]<<"x"<<
-					inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
-					detect(char(i+'X')){
-						_1=char(i+'X');
-						sysclr=1;
-					}
-				}
-				if(_1=='C') scta(6);else scta(15);
-				cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
-				detect('C'){
-					if(_1!='C'){
-						_1='C';
-					}
-					sysclr=1;
-				}
-				if(_1=='H') scta(6);else scta(15);
-				cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
-				detect('H'){
-					if(_1!='H'){
-						_1='H';
-					}
-					sysclr=1;
-				}
-				scta(15);
-				
-				if(_1=='?'){
-					cout<<"按下按键查看物品信息\n\n\n\n\n\n\n\n";
-				}
-				else{
-					cout<<"物品名称："<<itemname[tempslt.item]<<endl;
-					cout<<WIintro[tempslt.item]<<endl;
-					cout<<"用途："<<WIusage[tempslt.item]<<endl;
-					cout<<"来源："<<WIsourc[tempslt.item]<<endl;
-					cout<<"相关配方："<<endl;
-					bool flag=1;
-					if(tempslt.item!=0)
-					for(ing in:ings){
-						if(in.item1==tempslt.item
-						 ||in.item2==tempslt.item
-						 ||in.item3==tempslt.item
-						 ||in.dest==tempslt.item){
-							if(in.unlock){
-								cout<<itemname[in.item1]<<"x"<<in.num1<<" ";
-								if(in.have2)
-								cout<<itemname[in.item2]<<"x"<<in.num2<<" ";
-								if(in.have3)
-								cout<<itemname[in.item3]<<"x"<<in.num3<<" ";
-								cout<<"-> "<<itemname[in.dest]<<"x"<<in.num<<endl;
-								flag=0;
-							}
+				int vps=0;
+				bool sysclr=0;
+				char _1='?';
+				while(1){
+					setpos(0,0);
+					scta(7);
+					cout<<"按ESC退出\n";
+					scta(15);
+					cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
+					for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
+						if(_1==char(i+'1')) scta(6);else scta(15);
+						cout<<"第"<<i+1<<"个物品槽:             "<<
+						itemname[inventory.vaults[vps].slots[i].item]<<"x"<<
+						inventory.vaults[vps].slots[i].qutt<<"["<<i+1<<"]            \n";
+						detect(char(i+'1')){
+							_1=char(i+'1');
+							sysclr=1;
 						}
 					}
-					if(flag) cout<<"无";
+					cout<<endl;
+					for(unsigned i=0;i<inventory.hcl.slots.size();i++){
+						if(_1==char(i+'X')) scta(6);else scta(15);
+						cout<<"合成栏第"<<i+1<<"个物品槽:            "<<
+						itemname[inventory.hcl.slots[i].item]<<"x"<<
+						inventory.hcl.slots[i].qutt<<"["<<char(i+'X')<<"]            \n";
+						detect(char(i+'X')){
+							_1=char(i+'X');
+							sysclr=1;
+						}
+					}
+					if(_1=='C') scta(6);else scta(15);
+					cout<<"成品栏："<<itemname[inventory.cp.item]<<"x"<<inventory.cp.qutt<<"[C]            \n";
+					detect('C'){
+						if(_1!='C'){
+							_1='C';
+						}
+						sysclr=1;
+					}
+					if(_1=='H') scta(6);else scta(15);
+					cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"[H]            \n";
+					detect('H'){
+						if(_1!='H'){
+							_1='H';
+						}
+						sysclr=1;
+					}
+					scta(15);
+					
+					if(_1=='?'){
+						cout<<"按下按键查看物品信息\n\n\n\n\n\n\n\n";
+					}
+					else{
+						cout<<"物品名称："<<itemname[tempslt.item]<<endl;
+						cout<<WIintro[tempslt.item]<<endl;
+						cout<<"用途："<<WIusage[tempslt.item]<<endl;
+						cout<<"来源："<<WIsourc[tempslt.item]<<endl;
+						cout<<"相关配方："<<endl;
+						bool flag=1;
+						if(tempslt.item!=0)
+							for(ing in:ings){
+								if(in.item1==tempslt.item
+								   ||in.item2==tempslt.item
+								   ||in.item3==tempslt.item
+								   ||in.dest==tempslt.item){
+									if(in.unlock){
+										cout<<itemname[in.item1]<<"x"<<in.num1<<" ";
+										if(in.have2)
+											cout<<itemname[in.item2]<<"x"<<in.num2<<" ";
+										if(in.have3)
+											cout<<itemname[in.item3]<<"x"<<in.num3<<" ";
+										cout<<"-> "<<itemname[in.dest]<<"x"<<in.num<<endl;
+										flag=0;
+									}
+								}
+							}
+						if(flag) cout<<"无";
+					}
+					
+					if(_1!='?'){
+						if(_1>='1'&&_1<='9'){
+							tempslt.item=inventory.vaults[vps].slots[_1-'1'].item;
+							tempslt.qutt=inventory.vaults[vps].slots[_1-'1'].qutt;
+						}
+						if(_1>='I'&&_1<='M'){
+							tempslt.item=tempvlt.slots[_1-'I'].item;
+							tempslt.qutt=tempvlt.slots[_1-'I'].qutt;
+						}
+						if(_1>='X'&&_1<='Z'){
+							tempslt.item=inventory.hcl.slots[_1-'X'].item;
+							tempslt.qutt=inventory.hcl.slots[_1-'X'].qutt;
+						}
+						if(_1=='C'){
+							tempslt.item=inventory.cp.item;
+							tempslt.qutt=inventory.cp.qutt;
+						}
+						if(_1=='H'){
+							tempslt.item=inventory.hand.item;
+							tempslt.qutt=inventory.hand.qutt;
+						}
+					}
+					
+					if(sysclr){
+						system("cls");
+						sysclr=0;
+					}
+					
+					detect(VK_ESCAPE) return;
 				}
-				
-				if(_1!='?'){
-					if(_1>='1'&&_1<='9'){
-						tempslt.item=inventory.vaults[vps].slots[_1-'1'].item;
-						tempslt.qutt=inventory.vaults[vps].slots[_1-'1'].qutt;
-					}
-					if(_1>='I'&&_1<='M'){
-						tempslt.item=tempvlt.slots[_1-'I'].item;
-						tempslt.qutt=tempvlt.slots[_1-'I'].qutt;
-					}
-					if(_1>='X'&&_1<='Z'){
-						tempslt.item=inventory.hcl.slots[_1-'X'].item;
-						tempslt.qutt=inventory.hcl.slots[_1-'X'].qutt;
-					}
-					if(_1=='C'){
-						tempslt.item=inventory.cp.item;
-						tempslt.qutt=inventory.cp.qutt;
-					}
-					if(_1=='H'){
-						tempslt.item=inventory.hand.item;
-						tempslt.qutt=inventory.hand.qutt;
-					}
-				}
-				
-				if(sysclr){
-					system("cls");
-					sysclr=0;
-				}
-				
-				detect(VK_ESCAPE) return;
 			}
-		}
-		
-		detect('T'){
-			anicls();
-			setpos(0, 0);
 			
-			for(string i:WElist){
-				cout<<WEname[i]<<"："<<WEintro[i]<<"\n\t"<<WEeffect[i]<<endl;
+			detect('T'){
+				anicls();
+				setpos(0, 0);
+				
+				for(string i:WElist){
+					cout<<WEname[i]<<"："<<WEintro[i]<<"\n\t"<<WEeffect[i]<<endl;
+				}
+				system("pause");
+				anicls();
+				return;
 			}
-			system("pause");
-			anicls();
-			return;
-		}
-		
-		detect('U') { return; }
-		detect('Y') { banquan(); return;}
-		// TODO
-	}
-}
-void whenmove() {
-	force--;
-	Sleep(speed);
-}
-bool move() {
-	detects(VK_UP, 'W') {
-		if(wall[world[posy-1][posx]]) return 0;
-		whenmove();
-		posy--;
-		return 1;
-	}
-	detects(VK_DOWN, 'S') {
-		if(wall[world[posy+1][posx]]) return 0;
-		whenmove();
-		posy++;
-		return 1;
-	}
-	detects(VK_LEFT, 'A') {
-		if(wall[world[posy][posx-1]]) return 0;
-		whenmove();
-		posx--;
-		return 1;
-	}
-	detects(VK_RIGHT, 'D') {
-		if(wall[world[posy][posx+1]]) return 0;
-		whenmove();
-		posx++;
-		return 1;
-	}
-	return 0;
-}
-void build(char c,int returns){
-	//fixme
-	system("cls");
-	cout<<"在键盘上选择摆放的位置\n";
-	cout<<"7 8 9\n";
-	cout<<"4 @ 6\n";
-	cout<<"1 2 3\n";
-	cout<<"0(取消)";
-	while(1){
-		detects(VK_NUMPAD0,'0'){
-			takeanitem(returns);
-			break;
-		}
-		detects(VK_NUMPAD7,'7'){
-			world[posy-1][posx-1]=c;
-			break;
-		}
-		detects(VK_NUMPAD8,'8'){
-			world[posy-1][posx]=c;
-			break;
-		}
-		detects(VK_NUMPAD9,'9'){
-			world[posy-1][posx+1]=c;
-			break;
-		}
-		detects(VK_NUMPAD4,'4'){
-			world[posy][posx-1]=c;
-			break;
-		}
-		detects(VK_NUMPAD6,'6'){
-			world[posy][posx+1]=c;
-			break;
-		}
-		detects(VK_NUMPAD1,'1'){
-			world[posy+1][posx-1]=c;
-			break;
-		}
-		detects(VK_NUMPAD2,'2'){
-			world[posy+1][posx]=c;
-			break;
-		}
-		detects(VK_NUMPAD3,'3'){
-			world[posy+1][posx+1]=c;
-			break;
+			
+			detect('U') { return; }
+			detect('Y') { banquan(); return;}
+			// TODO
 		}
 	}
-}
+	void whenmove() {
+		force--;
+		Sleep(speed);
+	}
+	bool move() {
+		detects(VK_UP, 'W') {
+			if(wall[world[posy-1][posx]]) return 0;
+			whenmove();
+			posy--;
+			return 1;
+		}
+		detects(VK_DOWN, 'S') {
+			if(wall[world[posy+1][posx]]) return 0;
+			whenmove();
+			posy++;
+			return 1;
+		}
+		detects(VK_LEFT, 'A') {
+			if(wall[world[posy][posx-1]]) return 0;
+			whenmove();
+			posx--;
+			return 1;
+		}
+		detects(VK_RIGHT, 'D') {
+			if(wall[world[posy][posx+1]]) return 0;
+			whenmove();
+			posx++;
+			return 1;
+		}
+		return 0;
+	}
+	void build(char c,int returns){
+		//fixme
+		system("cls");
+		cout<<"在键盘上选择摆放的位置\n";
+		cout<<"7 8 9\n";
+		cout<<"4 @ 6\n";
+		cout<<"1 2 3\n";
+		cout<<"0(取消)";
+		while(1){
+			detects(VK_NUMPAD0,'0'){
+				takeanitem(returns);
+				break;
+			}
+			detects(VK_NUMPAD7,'7'){
+				world[posy-1][posx-1]=c;
+				break;
+			}
+			detects(VK_NUMPAD8,'8'){
+				world[posy-1][posx]=c;
+				break;
+			}
+			detects(VK_NUMPAD9,'9'){
+				world[posy-1][posx+1]=c;
+				break;
+			}
+			detects(VK_NUMPAD4,'4'){
+				world[posy][posx-1]=c;
+				break;
+			}
+			detects(VK_NUMPAD6,'6'){
+				world[posy][posx+1]=c;
+				break;
+			}
+			detects(VK_NUMPAD1,'1'){
+				world[posy+1][posx-1]=c;
+				break;
+			}
+			detects(VK_NUMPAD2,'2'){
+				world[posy+1][posx]=c;
+				break;
+			}
+			detects(VK_NUMPAD3,'3'){
+				world[posy+1][posx+1]=c;
+				break;
+			}
+		}
+	}
 }
 extern "C++"{//游戏
-void inittheworld(bool reset=1) {
-	printf("定义颜色\n");  //当成注释就行别删
-	color['.'] = 0xA0;     // grass
-	color[','] = 0x60;     // dirt
-	color[';'] = 0x20;     // bush
-	color['#'] = 0x70;     // border
-	color['?'] = 0x7F;     // border outside
-	color['T'] = 0xF6;     // tree
-	color['o'] = 0x67;     // rock
-	color['w'] = 0xFA;     // intabush
-	color['_'] = 0x3F;     // water
-	color['='] = 0x6E;     // wood
-	color['-'] = 0xE6;     // plank
-	printf("定义物品\n");
-	itemname[0] = "空";
-	itemsize[0] = 0;
-	itemname[1] = "小石子";
-	itemsize[1] = 1;
-	itemname[2] = "横木";
-	itemsize[2] = 3;
-	itemname[3] = "树枝";
-	itemsize[3] = 1;
-	itemname[4] = "酸果";
-	itemsize[4] = 1;
-	itemname[5] = "石斧";
-	itemsize[5] = 2;
-	itemname[6] = "木块";
-	itemsize[6] = 1;
-	itemname[7] = "木板";
-	itemsize[7] = 1;
-	intable['T'] = 1;
-	intable['o'] = 1;
-	intable['w'] = 1;
-	message = "";
-	printf("搭建碰撞箱\n");
-	wall['=']=1;
-	printf("定义配方\n");
-	ings.push_back(ing(1, 3, 1, 1, 1, 1, 0, 0, 0, 5));
-	ings.push_back(ing(1, 3, 1, 1, 2, 1, 0, 0, 0, 6, 3));
-	ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 7, 4));
-	printf("吃石化其他变量\n");
-	if(reset){
-		inventory.vaults.clear();
-		tpltvlt.slots.push_back(tpltslt);
-		tpltvlt.slots.push_back(tpltslt);
-		tpltvlt.slots.push_back(tpltslt);
-		inventory.vaults.push_back(tpltvlt);
-		tpltvlt.slots.clear();
-		inventory.hand=tpltslt;
-		inventory.hcl.name="合成栏";
-		inventory.hcl.slots.push_back(tpltslt);
-		inventory.hcl.slots.push_back(tpltslt);
-		inventory.hcl.slots.push_back(tpltslt);
-		posx = 2500;
-		posy = 2500;
-	}
-	inventory.rfwt();
-	alive = 1;
-	speed = 1;
-	force = 500;
-	//    posx = 0;
-	//    posy = 0;
-	showed = false;
-	if(!reset) goto heyhello;
-	printf("初始化地图\n");
-	for (int i = 0; i < 5000; i++) {
-		for (int j = 0; j < 5000; j++) {
-			world[i][j] = '?';
+	void inittheworld(bool reset=1) {
+		printf("定义颜色\n");  //当成注释就行别删
+		color['.'] = 0xA0;     // grass
+		color[','] = 0x60;     // dirt
+		color[';'] = 0x20;     // bush
+		color['#'] = 0x70;     // border
+		color['?'] = 0x7F;     // border outside
+		color['T'] = 0xF6;     // tree
+		color['o'] = 0x67;     // rock
+		color['w'] = 0xFA;     // intabush
+		color['_'] = 0x3F;     // water
+		color['='] = 0x6E;     // wood
+		color['-'] = 0xE6;     // plank
+		printf("定义物品\n");
+		itemname[0] = "空";
+		itemsize[0] = 0;
+		itemname[1] = "小石子";
+		itemsize[1] = 1;
+		itemname[2] = "横木";
+		itemsize[2] = 3;
+		itemname[3] = "树枝";
+		itemsize[3] = 1;
+		itemname[4] = "酸果";
+		itemsize[4] = 1;
+		itemname[5] = "石斧";
+		itemsize[5] = 2;
+		itemname[6] = "木块";
+		itemsize[6] = 1;
+		itemname[7] = "木板";
+		itemsize[7] = 1;
+		intable['T'] = 1;
+		intable['o'] = 1;
+		intable['w'] = 1;
+		message = "";
+		printf("搭建碰撞箱\n");
+		wall['=']=1;
+		printf("定义配方\n");
+		ings.push_back(ing(1, 3, 1, 1, 1, 1, 0, 0, 0, 5));
+		ings.push_back(ing(1, 3, 1, 1, 2, 1, 0, 0, 0, 6, 3));
+		ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 7, 4));
+		printf("吃石化其他变量\n");
+		if(reset){
+			inventory.vaults.clear();
+			tpltvlt.slots.push_back(tpltslt);
+			tpltvlt.slots.push_back(tpltslt);
+			tpltvlt.slots.push_back(tpltslt);
+			inventory.vaults.push_back(tpltvlt);
+			tpltvlt.slots.clear();
+			inventory.hand=tpltslt;
+			inventory.hcl.name="合成栏";
+			inventory.hcl.slots.push_back(tpltslt);
+			inventory.hcl.slots.push_back(tpltslt);
+			inventory.hcl.slots.push_back(tpltslt);
+			posx = 2500;
+			posy = 2500;
 		}
-	}
-	printf("使用大炮算法生成地图\n");
-	for (int i = uborder + 1; i < dborder; i++) {
-		for (int j = lborder + 1; j < rborder; j++) {
-			srand(time(0) + rand() + i + j + j / i + i / j);
-			int k = rand() + 123;
-			if (k % 2 == 1)
-				world[i][j] = world[i - 1][j];
-			if (k % 2 == 0)
-				world[i][j] = world[i][j - 1];
-			if (i == uborder + 1) {
-				if (j == lborder + 1) {
-					if (k % 4 == 0)
-						world[i][j] = '.';
-					if (k % 4 == 1)
-						world[i][j] = ',';
-					if (k % 4 == 2)
-						world[i][j] = ';';
-					if (k % 4 == 3)
-						world[i][j] = '_';
+		inventory.rfwt();
+		alive = 1;
+		speed = 1;
+		force = 500;
+		//    posx = 0;
+		//    posy = 0;
+		showed = false;
+		if(!reset) goto heyhello;
+		printf("初始化地图\n");
+		for (int i = 0; i < 5000; i++) {
+			for (int j = 0; j < 5000; j++) {
+				world[i][j] = '?';
+			}
+		}
+		printf("使用大炮算法生成地图\n");
+		for (int i = uborder + 1; i < dborder; i++) {
+			for (int j = lborder + 1; j < rborder; j++) {
+				srand(time(0) + rand() + i + j + j / i + i / j);
+				int k = rand() + 123;
+				if (k % 2 == 1)
+					world[i][j] = world[i - 1][j];
+				if (k % 2 == 0)
+					world[i][j] = world[i][j - 1];
+				if (i == uborder + 1) {
+					if (j == lborder + 1) {
+						if (k % 4 == 0)
+							world[i][j] = '.';
+						if (k % 4 == 1)
+							world[i][j] = ',';
+						if (k % 4 == 2)
+							world[i][j] = ';';
+						if (k % 4 == 3)
+							world[i][j] = '_';
+					} else {
+						if (k % 50 >= 4)
+							world[i][j] = world[i][j - 1];
+						if (k % 50 == 3)
+							world[i][j] = '.';
+						if (k % 50 == 2)
+							world[i][j] = ',';
+						if (k % 50 == 1)
+							world[i][j] = ';';
+						if (k % 50 == 0)
+							world[i][j] = '_';
+					}
 				} else {
-					if (k % 50 >= 4)
-						world[i][j] = world[i][j - 1];
-					if (k % 50 == 3)
-						world[i][j] = '.';
-					if (k % 50 == 2)
-						world[i][j] = ',';
-					if (k % 50 == 1)
-						world[i][j] = ';';
-					if (k % 50 == 0)
-						world[i][j] = '_';
+					if (j == lborder + 1) {
+						if (k % 50 >= 4)
+							world[i][j] = world[i - 1][j];
+						if (k % 50 == 3)
+							world[i][j] = '.';
+						if (k % 50 == 2)
+							world[i][j] = ',';
+						if (k % 50 == 1)
+							world[i][j] = ';';
+						if (k % 50 == 0)
+							world[i][j] = '_';
+					} else {
+						if (k % 100 >= 50)
+							world[i][j] = world[i - 1][j];
+						else if (k % 100 >= 4)
+							world[i][j] = world[i][j - 1];
+						if (k % 100 == 3)
+							world[i][j] = '.';
+						if (k % 100 == 2)
+							world[i][j] = ',';
+						if (k % 100 == 1)
+							world[i][j] = ';';
+						if (k % 100 == 0)
+							world[i][j] = '_';
+					}
 				}
-			} else {
-				if (j == lborder + 1) {
-					if (k % 50 >= 4)
-						world[i][j] = world[i - 1][j];
-					if (k % 50 == 3)
-						world[i][j] = '.';
-					if (k % 50 == 2)
-						world[i][j] = ',';
-					if (k % 50 == 1)
-						world[i][j] = ';';
-					if (k % 50 == 0)
-						world[i][j] = '_';
-				} else {
-					if (k % 100 >= 50)
-						world[i][j] = world[i - 1][j];
-					else if (k % 100 >= 4)
-						world[i][j] = world[i][j - 1];
-					if (k % 100 == 3)
-						world[i][j] = '.';
-					if (k % 100 == 2)
-						world[i][j] = ',';
-					if (k % 100 == 1)
-						world[i][j] = ';';
-					if (k % 100 == 0)
-						world[i][j] = '_';
+				// tree
+				if (world[i][j] == ';') {
+					srand(rand());
+					if (rand() % 75 == 1)
+						copwd[i][j] = 'T';
+				}
+				if (world[i][j] == '.') {
+					srand(rand());
+					if (rand() % 100 == 1)
+						copwd[i][j] = 'T';
+				}
+				// rock
+				if (world[i][j] == ',') {
+					srand(rand());
+					if (rand() % 75 == 1)
+						copwd[i][j] = 'o';
+				}
+				if (world[i][j] == '.') {
+					srand(rand());
+					if (rand() % 100 == 1)
+						copwd[i][j] = 'o';
+				}
+				// bush
+				if (world[i][j] == ';') {
+					srand(rand());
+					if (rand() % 75 == 1)
+						copwd[i][j] = 'w';
+				}
+				if (world[i][j] == '.') {
+					srand(rand());
+					if (rand() % 100 == 1)
+						copwd[i][j] = 'w';
 				}
 			}
-			// tree
-			if (world[i][j] == ';') {
-				srand(rand());
-				if (rand() % 75 == 1)
-					copwd[i][j] = 'T';
-			}
-			if (world[i][j] == '.') {
-				srand(rand());
-				if (rand() % 100 == 1)
-					copwd[i][j] = 'T';
-			}
-			// rock
-			if (world[i][j] == ',') {
-				srand(rand());
-				if (rand() % 75 == 1)
-					copwd[i][j] = 'o';
-			}
-			if (world[i][j] == '.') {
-				srand(rand());
-				if (rand() % 100 == 1)
-					copwd[i][j] = 'o';
-			}
-			// bush
-			if (world[i][j] == ';') {
-				srand(rand());
-				if (rand() % 75 == 1)
-					copwd[i][j] = 'w';
-			}
-			if (world[i][j] == '.') {
-				srand(rand());
-				if (rand() % 100 == 1)
-					copwd[i][j] = 'w';
+			if (i % 100 == 0)
+				cout << '#';
+		}
+		printf("\n生成可交互的地块\n");
+		for (int i = uborder + 1; i < dborder; i++) {
+			for (int j = lborder + 1; j < rborder; j++) {
+				if (copwd[i][j])
+					world[i][j] = copwd[i][j];
 			}
 		}
-		if (i % 100 == 0)
-			cout << '#';
-	}
-	printf("\n生成可交互的地块\n");
-	for (int i = uborder + 1; i < dborder; i++) {
-		for (int j = lborder + 1; j < rborder; j++) {
-			if (copwd[i][j])
-				world[i][j] = copwd[i][j];
-		}
-	}
-	heyhello:;
-	printf("设立边界\n");
-	for (int i = uborder; i <= dborder; i++) world[i][lborder] = '#';
-	for (int i = uborder; i <= dborder; i++) world[i][rborder] = '#';
-	for (int j = lborder; j <= rborder; j++) world[uborder][j] = '#';
-	for (int j = lborder; j <= rborder; j++) world[dborder][j] = '#';
-	
-	printf("启动！\n");
-	
-	//devmode
+		heyhello:;
+		printf("设立边界\n");
+		for (int i = uborder; i <= dborder; i++) world[i][lborder] = '#';
+		for (int i = uborder; i <= dborder; i++) world[i][rborder] = '#';
+		for (int j = lborder; j <= rborder; j++) world[uborder][j] = '#';
+		for (int j = lborder; j <= rborder; j++) world[dborder][j] = '#';
+		
+		printf("启动！\n");
+		
+		//devmode
 //	inventory.vaults[0].slots[0].item=1;
 //	inventory.vaults[0].slots[0].qutt=1;
 //	inventory.vaults[0].slots[1].item=2;
 //	inventory.vaults[0].slots[1].qutt=2;
 //	inventory.vaults[0].slots[2].item=3;
 //	inventory.vaults[0].slots[2].qutt=3;
-	
-	system("cls");
-}
-void savetheworld(){
-	anicls();
-	setpos(0,0);
-	cout<<"为您的存档命名:";
-	string name;
-	cin>>name;
-	cout<<"正在保存";
-	out.open((name+".jc6").c_str());
-	for(int i=uborder;i<=dborder;i++){
-		for(int j=lborder;j<=rborder;j++){
-			out<<world[i][j];
-		}out<<endl;
-		if(i%100==0) cout<<'.';
+		
+//		inventory.vaults[0].slots[0].item=1;
+//		inventory.vaults[0].slots[0].qutt=6767;
+		system("cls");
 	}
-	inventory.wi();
-	out<<" "<<posx<<" "<<posy;
-	out.close();
-	cout<<endl<<"保存完毕。";
-	Sleep(100);
-	anicls();
-	setpos(0,0);
-}
-void loadtheworld(){
-	anicls();
-	setpos(0,0);
-	cout<<"拖入存档(.jc6)文件:";
-	string name;
-	cin>>name;
-	cout<<"正在导入";
-	in.open(name.c_str());
-	for(int i=uborder;i<=dborder;i++){
-		for(int j=lborder;j<=rborder;j++){
-			in>>world[i][j];
+	void savetheworld(){
+		anicls();
+		setpos(0,0);
+		cout<<"为您的存档命名:";
+		string name;
+		cin>>name;
+		cout<<"正在保存";
+		out.open((name+".jc6").c_str());
+		for(int i=uborder;i<=dborder;i++){
+			for(int j=lborder;j<=rborder;j++){
+				out<<world[i][j];
+			}out<<endl;
+			if(i%100==0) cout<<'.';
 		}
-		if(i%100==0) cout<<'.';
+		inventory.wi();
+		out<<" "<<posx<<" "<<posy;
+		out.close();
+		cout<<endl<<"保存完毕。";
+		Sleep(100);
+		anicls();
+		setpos(0,0);
 	}
-	inventory.ri();
-	in.close();
-	in>>posx>>posy;
-	cout<<endl<<"加载完毕。";
-	Sleep(100);
-	anicls();
-	setpos(0,0);
-}
-void The_World() {
-	weijiinit();
-	while (alive) {
-		setpos(0, 0);
-		scta(0x85);
-		printf("[坐标:<%d,%d>] ", posx, posy);
-		scta(0x8A);
-		printf("[体力:%d] ", force);
-		
-		scta(0x8F);
-		if ((showed -= 0.05) > 0) {
-			cout << message << "\n";
-		} else {
-			scta(0x0);
-			cout << "                        "
-			<< "\n";
-		}
-		scta(0xF);
-		for (int i = posy - 10; i <= posy + 10; i++) {
-			for (int j = posx - 25; j <= posx + 25; j++) {
-				if (i == posy && j == posx) {
-					scta(0xF6 | vision);
-					printf("@");
-				} else {
-					scta(color[world[i][j]] | vision);
-					printf("%c", world[i][j]);
-				}
+	void loadtheworld(){
+		anicls();
+		setpos(0,0);
+		cout<<"拖入存档(.jc6)文件:";
+		string name;
+		cin>>name;
+		cout<<"正在导入";
+		in.open(name.c_str());
+		for(int i=uborder;i<=dborder;i++){
+			for(int j=lborder;j<=rborder;j++){
+				in>>world[i][j];
 			}
-			printf("\n");
+			if(i%100==0) cout<<'.';
 		}
-		scta(0xF);
-		scta(0x8E);
-		for(effect i:status){
-			cout<<WEname[i.name]<<i.value<<" ";
-		}
-		scta(0xF);
-		cout<<"                                                                       ";
-		cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"            \n";
-		vision = 0x0;
-		bool moved=0;
-		if(move()){
-			moved=1;
-		}
-		for(effect i:status){
-			if(i.name=="swim"&&moved){
-				if(i.value>4) dead("认为自己可以水下呼吸");
-				force-=(i.value*i.value%10000*i.value%10000);
+		inventory.ri();
+		in.close();
+		in>>posx>>posy;
+		cout<<endl<<"加载完毕。";
+		Sleep(100);
+		anicls();
+		setpos(0,0);
+	}
+	void The_World() {
+		weijiinit();
+		while (alive) {
+			setpos(0, 0);
+			scta(0x85);
+			printf("[坐标:<%d,%d>] ", posx, posy);
+			scta(0x8A);
+			printf("[体力:%d] ", force);
+			
+			scta(0x8F);
+			if ((showed -= 0.05) > 0) {
+				cout << message << "\n";
+			} else {
+				scta(0x0);
+				cout << "                        "
+				<< "\n";
 			}
-		}
-		
-		detect('Z'){//item system
-			weijipedia();
-		}
-		
-		detect('R'){//item system
-			itemsystem();
-		}
-		
-		if (inventory.hand.item==5){
-			damage=4;
-			if(showed==0){
-				message = "持有石斧";
-				showed = true;
-			}
-		}else{
-			damage=1;
-		}
-		if(press('E')&&inventory.hand.item==6){
-			inventory.hand.qutt--;
-			inventory.refresh();
-			build('=',6);
-		}
-		if(press('E')&&inventory.hand.item==7){
-			inventory.hand.qutt--;
-			inventory.refresh();
-			build('-',7);
-		}
-		
-		detect(VK_ESCAPE) {
-			anicls();
-			int pointer = 0;
-			while (1) {
-				setpos(0, 0);
-				scta(0xF);
-				cout << "游戏已暂停\n";
-				scta(pointer == 0 ? 0x6 : 0xF);
-				cout << "* 继续游戏\n";
-				scta(pointer == 1 ? 0x6 : 0xF);
-				cout << "* 查看喂鸡百科（游戏中按Z）\n";
-				scta(pointer == 2 ? 0x6 : 0xF);
-				cout << "* 保存\n";
-				scta(pointer == 3 ? 0x6 : 0xF);
-				cout << "* 孔子不玩了，老子也不玩了\n";
-				scta(0xF);
-				cout << "*使用↑↓选择，Enter以确定";
-				detect(VK_DOWN) pointer = (pointer + 5) % 4, Sleep(100);
-				detect(VK_UP) pointer = (pointer + 3) % 4, Sleep(100);
-				detect(VK_RETURN) {
-					if (pointer == 0) {
-						break;
-					}
-					if (pointer == 1) {
-						weijipedia();
-						anicls();
-					}
-					if (pointer == 2) {
-						savetheworld();
-					}
-					if (pointer == 3) {
-						exit(0);
+			scta(0xF);
+			for (int i = posy - 10; i <= posy + 10; i++) {
+				for (int j = posx - 25; j <= posx + 25; j++) {
+					if (i == posy && j == posx) {
+						scta(0xF6 | vision);
+						printf("@");
+					} else {
+						scta(color[world[i][j]] | vision);
+						printf("%c", world[i][j]);
 					}
 				}
+				printf("\n");
 			}
-		}
-		if (world[posy][posx] == 'T') {
-			detect('P') {
-				int progress = 0;
+			scta(0xF);
+			scta(0x8E);
+			for(effect i:status){
+				cout<<WEname[i.name]<<i.value<<" ";
+			}
+			scta(0xF);
+			cout<<"                                                                       ";
+			cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"            \n";
+			vision = 0x0;
+			bool moved=0;
+			if(move()){
+				moved=1;
+			}
+			for(effect i:status){
+				if(i.name=="swim"&&moved){
+					if(i.value>4) dead("认为自己可以水下呼吸");
+					force-=(i.value*i.value%10000*i.value%10000);
+				}
+			}
+			
+			detect('Z'){//item system
+				weijipedia();
+			}
+			
+			detect('R'){//item system
+				itemsystem();
+			}
+			
+			if (inventory.hand.item==5){
+				damage=4;
+				if(showed==0){
+					message = "持有石斧";
+					showed = true;
+				}
+			}else{
+				damage=1;
+			}
+			if(press('E')&&inventory.hand.item==6){
+				inventory.hand.qutt--;
+				inventory.refresh();
+				build('=',6);
+			}
+			if(press('E')&&inventory.hand.item==7){
+				inventory.hand.qutt--;
+				inventory.refresh();
+				build('-',7);
+			}
+			
+			detect(VK_ESCAPE) {
 				anicls();
-				while (progress < 10) {
-					scta(0xF);
+				int pointer = 0;
+				while (1) {
 					setpos(0, 0);
-					printf("按下P砍树\n");
-					scta(0xA);
-					printf("        XXX \n");
-					printf("       XXXXX\n");
-					printf("       XXXXX\n    ");
-					scta(0xF6);
-					printf("@");
-					scta(0x6);
-					printf("   ||| \n");
 					scta(0xF);
-					printf("   /\\   ");
-					scta(0x6);
-					printf("||| \n");
+					cout << "游戏已暂停\n";
+					scta(pointer == 0 ? 0x6 : 0xF);
+					cout << "* 继续游戏\n";
+					scta(pointer == 1 ? 0x6 : 0xF);
+					cout << "* 查看喂鸡百科（游戏中按Z）\n";
+					scta(pointer == 2 ? 0x6 : 0xF);
+					cout << "* 保存\n";
+					scta(pointer == 3 ? 0x6 : 0xF);
+					cout << "* 孔子不玩了，老子也不玩了\n";
 					scta(0xF);
-					printf("   ||  ");
-					scta(0x6);
-					printf(" ||| \n");
-					scta(0xF);
-					printf("进度:%d/10 体力:%d 一次伤害%d\n", progress, force, damage);
-					detect('P') {
-						srand(rand());
-						if (rand() % 3 == 1) {
-							printf("没砍到");
-						} else {
-							printf("砍到了");
-							progress += damage;
+					cout << "*使用↑↓选择，Enter以确定";
+					detect(VK_DOWN) pointer = (pointer + 5) % 4, Sleep(100);
+					detect(VK_UP) pointer = (pointer + 3) % 4, Sleep(100);
+					detect(VK_RETURN) {
+						if (pointer == 0) {
+							break;
 						}
-						force--;
-						if (force <= 0) {
-							dead("砍树然后被树砍死");
-							return;
+						if (pointer == 1) {
+							weijipedia();
+							anicls();
 						}
-						Sleep(1000);
+						if (pointer == 2) {
+							savetheworld();
+						}
+						if (pointer == 3) {
+							exit(0);
+						}
 					}
 				}
-				takeanitem(2);
-				world[posy][posx] = ',';
 			}
-		}
-		if (world[posy][posx] == 'o') {
-			detect('P') {
-				takeanitem(1);
-				world[posy][posx] = ',';
+			if (world[posy][posx] == 'T') {
+				detect('P') {
+					int progress = 0;
+					anicls();
+					while (progress < 10) {
+						scta(0xF);
+						setpos(0, 0);
+						printf("按下P砍树\n");
+						scta(0xA);
+						printf("        XXX \n");
+						printf("       XXXXX\n");
+						printf("       XXXXX\n    ");
+						scta(0xF6);
+						printf("@");
+						scta(0x6);
+						printf("   ||| \n");
+						scta(0xF);
+						printf("   /\\   ");
+						scta(0x6);
+						printf("||| \n");
+						scta(0xF);
+						printf("   ||  ");
+						scta(0x6);
+						printf(" ||| \n");
+						scta(0xF);
+						printf("进度:%d/10 体力:%d 一次伤害%d\n", progress, force, damage);
+						detect('P') {
+							srand(rand());
+							if (rand() % 3 == 1) {
+								printf("没砍到");
+							} else {
+								printf("砍到了");
+								progress += damage;
+							}
+							force--;
+							if (force <= 0) {
+								dead("砍树然后被树砍死");
+								return;
+							}
+							Sleep(1000);
+						}
+					}
+					takeanitem(2);
+					world[posy][posx] = ',';
+				}
 			}
-		}
-		if (world[posy][posx] == 'w') {
-			detect('P') {
-				srand(rand());
-				takeanitem(rand() % 2 + 3);
-				world[posy][posx] = '.';
+			if (world[posy][posx] == 'o') {
+				detect('P') {
+					takeanitem(1);
+					world[posy][posx] = ',';
+				}
 			}
-		}
-		if (world[posy][posx] == '_') {
-			if(moved){
+			if (world[posy][posx] == 'w') {
+				detect('P') {
+					srand(rand());
+					takeanitem(rand() % 2 + 3);
+					world[posy][posx] = '.';
+				}
+			}
+			if (world[posy][posx] == '_') {
+				if(moved){
+					for(unsigned i=0;i<status.size();i++){
+						if(status[i].name=="swim"){
+							status[i].value++;
+							goto addedswim;
+						}
+					}
+					if(1){
+						status.push_back({"swim",1});
+					}
+					addedswim:;
+				}
+			}else if(moved){
 				for(unsigned i=0;i<status.size();i++){
 					if(status[i].name=="swim"){
-						status[i].value++;
-						goto addedswim;
+						status.erase(status.begin()+i);
 					}
 				}
-				if(1){
-					status.push_back({"swim",1});
-				}
-				addedswim:;
 			}
-		}else if(moved){
-			for(unsigned i=0;i<status.size();i++){
-				if(status[i].name=="swim"){
-					status.erase(status.begin()+i);
-				}
+			if (force > 100)
+				;  //不能删！
+			else if (force >= 50) {
+				srand(rand());
+				if (rand() % 5 == 0)
+					vision = 0x4000;
+			} else if (force >= 20) {
+				srand(rand());
+				if (rand() % 3 == 0)
+					vision = 0x4000;
+			} else if (force > 0) {
+				srand(rand());
+				if (rand() % 2 == 0)
+					vision = 0x4000;
+			} else {
+				dead("肌无力");
+				return;
 			}
 		}
-		if (force > 100)
-			;  //不能删！
-		else if (force >= 50) {
-			srand(rand());
-			if (rand() % 5 == 0)
-				vision = 0x4000;
-		} else if (force >= 20) {
-			srand(rand());
-			if (rand() % 3 == 0)
-				vision = 0x4000;
-		} else if (force > 0) {
-			srand(rand());
-			if (rand() % 2 == 0)
-				vision = 0x4000;
-		} else {
-			dead("肌无力");
-			return;
-		}
+		Sleep(10);
 	}
-	Sleep(10);
-}
 }
 int main() {//菜单
 	versioninit();
@@ -1646,3 +1818,4 @@ int main() {//菜单
 	The_World();
 	return 0;
 }
+
