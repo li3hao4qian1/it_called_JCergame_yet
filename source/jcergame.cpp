@@ -1,11 +1,13 @@
-// copyleft(c) lihaoqian,LiJunyi
-//版权所有，亲全必究
-//任何试图盗窃此代码的人会被JC
+// Copyleft(c) lihaoqian,LiJunyi
+// 版权所有，亲全必究
+// 任何试图盗窃此代码的人会被JC
 // 请在编译时添加命令"-std=c++11"！！！
-// 请在编译时添加命令"-std=c++11"！！！
-// 请在编译时添加命令"-std=c++11"！！！
-// 请在编译时添加命令"-std=c++11"！！！
-// 请在编译时添加命令"-std=c++11"！！！
+// extern的作用是让部分可以收起
+#define bigver 0
+#define midver 0
+#define smaver 6
+#define snpsot 2
+extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
 #include <fstream>
@@ -14,6 +16,9 @@
 #include <wincon.h>
 #include <time.h>
 #include <direct.h>
+}
+extern "C++"{//其他预处理
+using namespace std;
 // For faster,we will do optimize.
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
@@ -24,9 +29,126 @@
 #define dborder 4500
 #define detect(VK_NONAME) if (press(VK_NONAME))
 #define detects(VK_NONAME, int) if (press(VK_NONAME) || press(int))
-using namespace std;
-// extern的作用是让这一部分可以收起(WeijiPedia)
-extern "C++" {
+}
+extern "C++"{//更新日志
+	struct version{
+		int y,m,d;
+		string detail="";
+		vector<string> intro;
+		void init(int yy,int mm,int dd,string dt){
+			y=yy;
+			m=mm;
+			d=dd;
+			detail=dt;
+		}
+		void addintro(string intr){
+			intro.push_back(intr);
+		}
+		void print(int _1,int _2,int _3,int _4){
+			cout<<"ver "<<_1<<"."<<_2<<"."<<_3<<(_4?"."+to_string(_4):"")<<" "<<detail<<endl;
+			if(!y){
+				cout<<"没有这个版本！！\n";
+				return;
+			}
+			cout<<"发布时间："<<y<<"/"<<(m<10?"0":"")<<m<<"/"<<(d<10?"0":"")<<d<<endl;
+			for(string i:intro){
+				cout<<"* "<<i<<endl;
+			}
+		}
+	};
+	version versions[30][30][30][300]; 
+	void versioninit(){
+		versions[0][0][1][0].init(25,7,14,"");
+		versions[0][0][1][0].addintro("我们有菜单！");
+		versions[0][0][1][0].addintro("我们有更新日志！");
+		versions[0][0][1][0].addintro("我们有SunriseLJY！");
+		versions[0][0][1][0].addintro("该版本的唯一近似链接已失效：sdfzoj.top/submission/125394");
+		versions[0][0][2][0].init(25,7,21,"");
+		versions[0][0][2][0].addintro("更新了物品配方。");
+		versions[0][0][2][0].addintro("该版本的唯一近似链接已失效：sdfzoj.top/submission/128737");
+		versions[0][0][3][0].init(25,7,21,"");
+		versions[0][0][3][0].addintro("更新了暂停菜单。");
+		versions[0][0][3][0].addintro("修复了一个无足轻重(划掉)重如泰山的bug。");
+		versions[0][0][3][0].addintro("该版本的唯一近似链接已失效：sdfzoj.top/submission/128934");
+		versions[0][0][4][0].init(25,12,6,"");
+		versions[0][0][4][0].addintro("新功能：效果！");
+		versions[0][0][4][0].addintro("我们有水！");
+		versions[0][0][5][0].init(26,2,12,"");
+		versions[0][0][5][0].addintro("新功能：放置方块！");
+		versions[0][0][5][0].addintro("我们有木块和木板！");
+		versions[0][0][6][0].init(26,4,6,"“铲屎更新 Pt.1”");
+		versions[0][0][6][0].addintro("更新了物品系统。");
+		versions[0][0][6][0].addintro("更新了合成系统。");
+		versions[0][0][6][0].addintro("更新了存档系统。");
+		versions[0][0][6][1].init(26,4,18,"");
+		versions[0][0][6][1].addintro("更新了维基百科中的物品介绍。");
+		versions[0][0][6][2].init(26,5,30,"");
+		versions[0][0][6][2].addintro("美化了代码。");
+		versions[0][0][6][2].addintro("更新了版本的记录方式。");
+	}
+	void showversion(){
+		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
+		changedshowedversion:
+		system("cls");
+		versions[_1][_2][_3][_4].print(_1,_2,_3,_4);
+		cout<<"按1增加大版本，按2增加版本，按3增加小版本，按4增加快照，按5自动切换下一个版本\n";
+		cout<<"按Shift改为减少/上一个,按Q退出\n";
+		while(1){
+			if(press(VK_SHIFT)){
+				detect('1') _1--;
+				detect('2') _2--;
+				detect('3') _3--;
+				detect('4') _4--;
+				_1=max(_1,0);
+				_2=max(_2,0);
+				_3=max(_3,0);
+				_4=max(_4,0);
+				detect('5'){
+					int code=_1*270000+_2*9000+_3*300+_4;
+					_1=_2=_3=_4=0;
+					while(code--){
+						int kode=code;
+						_4=code%300;
+						code/=300;
+						_3=code%30;
+						code/=30;
+						_2=code%30;
+						code/=30;
+						_1=code;
+						if(versions[_1][_2][_3][_4].y) break;
+						code=kode;
+					}
+					if(code==-1) _1=bigver,_2=midver,_3=smaver,_4=snpsot;
+				}
+				Sleep(100);
+				goto changedshowedversion;
+			}
+			detect('1') _1++;
+			detect('2') _2++;
+			detect('3') _3++;
+			detect('4') _4++;
+			detect('5'){
+				_4++;
+				if(!versions[_1][_2][_3][_4].y){
+					_4=0;_3++;
+					if(!versions[_1][_2][_3][_4].y){
+						_3=0;_2++;
+						if(!versions[_1][_2][_3][_4].y){
+							_2=0;_1++;
+							if(!versions[_1][_2][_3][_4].y){
+								_1=_2=_4=0;_3=1;
+							}
+						}
+					}
+				}
+			}
+			detect('Q') break;
+			Sleep(100);
+			goto changedshowedversion;
+		}
+	}
+}
+extern "C++"{//喂鸡百科预处理
 	string keyboard[114] = { "",
 		"------------------------------------------------------\n",
 		"|Es|  |F1|F2|F3|F4|F5|F6|F7|F8|F9|F0|F1|F2| |PS|SL|PB|\n",
@@ -111,6 +233,7 @@ extern "C++" {
 		WIcount=7;
 	}
 }  // WeijiPedia
+extern "C++"{//有用？的函数
 int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
 void setpos(float x, float y) {
 	COORD pos;
@@ -144,6 +267,41 @@ void delaymsg(string msg, int ms = 50) {  // Show a string slowly.
 		Sleep(ms);
 	}
 }
+void banquan() {
+	anicls();
+	setpos(0, 0);
+	cout << "                   ︵ \n";
+	cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
+	cout << "                   ︶ \n";
+	cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
+	cout << "按 ESC 退出。";
+	while (true) {
+		detect(VK_ESCAPE) {
+			anicls();
+			return;
+		}
+	}
+}
+void dead(string msg) {
+	anicls();
+	setpos(0, 0);
+	scta(0xF);
+	delaymsg("你死了！\n");
+	delaymsg("死因：");
+	delaymsg(msg);
+	delaymsg("\n");
+	delaymsg("按Q退出\n");
+	while (1) {
+		detect('Q') { exit(0); }
+		Sleep(10);
+	}
+}
+}
+extern "C++"{//结构体
+	struct effect{
+		string name;
+		int value;
+	};
 struct ing {
 	bool unlock;
 	int item1, num1;
@@ -163,11 +321,8 @@ struct ing {
 		num=k;
 	}
 };
-struct effect{
-	string name;
-	int value;
-};
-extern "C++"{//vars
+}
+extern "C++"{//变量
 	string message;
 	map<char, int> color;
 	map<int, string> itemname;
@@ -187,24 +342,8 @@ extern "C++"{//vars
 	int posx, posy;
 	ofstream out;
 	ifstream in;
-}
-void banquan() {
-	anicls();
-	setpos(0, 0);
-	cout << "                   ︵ \n";
-	cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
-	cout << "                   ︶ \n";
-	cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
-	cout << "按 ESC 退出。";
-	while (true) {
-		detect(VK_ESCAPE) {
-			anicls();
-			return;
-		}
-	}
-}
-
-//item system
+}//item system
+extern "C++"{//物品系统
 struct slot{
 	int item=0,qutt=0;
 	int weight(){
@@ -602,22 +741,8 @@ void takeanitem(int item,int qutt=1){
 	tempvlt.slots[0].qutt=qutt;
 	itemsystem(1);
 }
-
-void dead(string msg) {
-	anicls();
-	setpos(0, 0);
-	scta(0xF);
-	delaymsg("你死了！\n");
-	delaymsg("死因：");
-	delaymsg(msg);
-	delaymsg("\n");
-	delaymsg("按Q退出\n");
-	while (1) {
-		detect('Q') { exit(0); }
-		Sleep(10);
-	}
 }
-
+extern "C++"{//游戏内使用函数
 void weijipedia() {
 	anicls();
 	system("cls");
@@ -1016,8 +1141,8 @@ void build(char c,int returns){
 		}
 	}
 }
-
-
+}
+extern "C++"{//游戏
 void inittheworld(bool reset=1) {
 	printf("定义颜色\n");  //当成注释就行别删
 	color['.'] = 0xA0;     // grass
@@ -1209,7 +1334,6 @@ void inittheworld(bool reset=1) {
 	
 	system("cls");
 }
-
 void savetheworld(){
 	anicls();
 	setpos(0,0);
@@ -1232,7 +1356,6 @@ void savetheworld(){
 	anicls();
 	setpos(0,0);
 }
-
 void loadtheworld(){
 	anicls();
 	setpos(0,0);
@@ -1255,7 +1378,6 @@ void loadtheworld(){
 	anicls();
 	setpos(0,0);
 }
-
 void The_World() {
 	weijiinit();
 	while (alive) {
@@ -1470,7 +1592,9 @@ void The_World() {
 	}
 	Sleep(10);
 }
-int main() {
+}
+int main() {//菜单
+	versioninit();
 	system("title JCerGame");
 	system("color 0F");
 	int pointer = 0;
@@ -1505,37 +1629,7 @@ int main() {
 			if (pointer == 2) {
 				anicls();
 				setpos(0, 0);
-				cout << "更多版本请查看源代码。\n";
-				cout << "ver 0.0.6.1,18/04/26\n";
-				cout << "* 更新了维基百科中的物品介绍。\n";
-				
-				cout << "ver 0.0.6 “铲屎更新 Pt.1”,06/04/26\n";
-				cout << "* 更新了物品系统。\n";
-				cout << "* 更新了合成系统。\n";
-				cout << "* 更新了存档系统。\n";
-				if ("收起此部分" == "I AK I0I.") {
-					cout << "ver 0.0.5,12/02/26 11:58\n";
-					cout << "* 新功能：放置方块！\n";
-					cout << "* 我们有木块和木板！\n";
-					cout << "更多版本请查看源代码。\n";
-					
-					cout << "ver 0.0.4,06/12/25 21:35\n";
-					cout << "* 新功能：效果！\n";
-					cout << "* 我们有水！\n";
-					
-					cout << "ver 0.0.3,21/07/25 17:24\n";
-					cout << "* 更新了暂停菜单。\n";
-					cout << "* 修复了一个无足轻重(划掉)重如泰山的bug。\n";
-					
-					cout << "ver 0.0.2,19/07/25 05:00 p.m.\n";
-					cout << "* 更新了物品配方。\n";
-					
-					cout << "ver 0.0.1,14/07/25 06:01 p.m.\n";
-					cout << "* 我们有菜单！\n";
-					cout << "* 我们有更新日志！\n";
-					cout << "* 我们有SunriseLJY！\n";
-				}
-				system("pause");
+				showversion();
 				anicls();
 			}
 			if (pointer == 3) {
@@ -1552,4 +1646,3 @@ int main() {
 	The_World();
 	return 0;
 }
-
