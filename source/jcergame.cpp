@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 7
-#define snpsot 1
+#define snpsot 2
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -97,6 +97,10 @@ extern "C++"{//更新日志
 		versions[0][0][7][1].addintro("你现在可以食用生牛肉了。");
 		versions[0][0][7][1].addintro("对luyiming的无耻盗窃行为进行了强烈谴责。");
 		versions[0][0][7][1].addintro("加入了血条。");
+		versions[0][0][7][2].init(26,7,11,"普罗米修斯更新");
+		versions[0][0][7][2].addintro("加入了石炉。");
+		versions[0][0][7][2].addintro("加入了熟牛肉。");
+		versions[0][0][7][2].addintro("显示了血条。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -205,6 +209,8 @@ extern "C++"{//喂鸡百科预处理
 		WBintro['='] = "墙。";
 		WBname['-'] = "木板";
 		WBintro['-'] = "桥。";
+		WBname['O'] = "石炉";
+		WBintro['O'] = "你知道吗？三块石头（其实两块）就可以生火了……";
 		WBlist.push_back('.');
 		WBlist.push_back(',');
 		WBlist.push_back(';');
@@ -214,6 +220,7 @@ extern "C++"{//喂鸡百科预处理
 		WBlist.push_back('_');
 		WBlist.push_back('=');
 		WBlist.push_back('-');
+		WBlist.push_back('O');
 		WEname["swim"]="涉水";
 		WEintro["swim"]="进入水源时获得，每在水中移动一次，效果+1，直到离开";
 		WEeffect["swim"]="移动时，额外失去 X的立方 点体力，x>4时溺亡";
@@ -242,16 +249,19 @@ extern "C++"{//喂鸡百科预处理
 		WIintro[7]="可以放置的不阻挡通行的木头";
 		WIusage[7]="放置木板";
 		WIsourc[7]="合成获得";
-		WIintro[8]="生的牛肉（？）";
-		WIusage[8]="吃";
+		WIintro[8]="生的牛肉";
+		WIusage[8]="吃（但是没熟）";
 		WIsourc[8]="杀死牛获得";
 		WIintro[9]="字符串（？）";
 		WIusage[9]="合成物品";
-		WIsourc[9]="养猫获得";
-		WIintro[10]="猫的食物残渣。兑。";
-		WIusage[10]="合成物品";
-		WIsourc[10]="养猫获得";
-		WIcount=10;
+		WIsourc[9]="杀死猫获得";
+		WIintro[10]="熟的牛肉";
+		WIusage[10]="吃（熟辣）";
+		WIsourc[10]="烤制生牛肉获得";
+		WIintro[11]="And he sacrificed...";
+		WIusage[11]="放置石炉";
+		WIsourc[11]="合成获得";
+		WIcount=11;
 	}
 }  // WeijiPedia
 extern "C++"{//有用？的函数
@@ -378,8 +388,9 @@ extern "C++"{//变量
 	vector<ing> ings;
 	bool intable[255];    // interact able,It should be map<char,bool>
 	bool wall[255];       // pass ability, It should be map<char,bool>
-	bool bad[255];       // pass ability, It should be map<char,bool>
-	bool alive = 1;       // is al3ive
+	bool bad[255];        // pass ability, It should be map<char,bool>
+	int burnresult[255];  // burn ability, It should be map<char,bool>
+	bool alive = 1;       // is alive
 	int speed = 1;        // delay between movements (ms)
 	int force = 114514;   // -1 per movement
 	int hp = 50;   
@@ -496,13 +507,21 @@ extern "C++"{//物品系统
 	bool slotcmp(slot x,slot y){
 		return x.item>y.item;
 	}
-	void itemsystem(bool showtempvlt=0){
+	void itemsystem(bool showtempvlt=0,bool furnace=0){
 		anicls();
 		setpos(0,0);
 		int vps=0;
 		slot hcl[10],cp;
 		ing usingin(0,0,0,0,0,0,0,0,0,0,0);
 		char _1='?',_2='?';
+		if(furnace){
+			tempvlt=tpltvlt;
+			tempvlt.name="地上(退出界面后消失)";
+			tempvlt.slots.push_back(tpltslt);
+			tempvlt.slots[0].item=0;
+			tempvlt.slots[0].qutt=0;
+		}
+		int burning=0;
 		for(int i=0;i<10;i++) hcl[i]=tpltslt;
 		while(1){
 			setpos(0,0);
@@ -533,6 +552,34 @@ extern "C++"{//物品系统
 							else _1=char(i+'I');
 						}
 					}
+				}
+			}
+			if(furnace){
+				scta(15);
+				if(_1==char('I')) scta(6);else scta(15);
+				cout<<"\n炉内物品:            "<<
+				itemname[tempvlt.slots[0].item]<<"x"<<
+				tempvlt.slots[0].qutt<<"["<<char('I')<<"]            \n";
+				cout<<"烧制进度："<<burning<<"%    \n";
+				detect(char('I')){
+					if(_1!=char('I')){
+						if(_1!='?') _2=char('I');
+						else _1=char('I');
+					}
+				}
+				if(tempvlt.slots[0].item==0){
+					burning=0;
+				}else{
+					if(burnresult[tempvlt.slots[0].item]){
+						srand(time(0));
+						if(rand()%6==0){
+							burning++;
+						}
+						if(burning>=(tempvlt.slots[0].qutt)*100){
+							burning=0;
+							tempvlt.slots[0].item=burnresult[tempvlt.slots[0].item];
+						}
+					}else burning=0;
 				}
 			}
 			cout<<endl;
@@ -1437,7 +1484,7 @@ extern "C++"{//游戏内使用函数
 	}
 }
 extern "C++"{//游戏
-	void inittheworld(bool reset=1) {
+ 	void inittheworld(bool reset=1) {
 		printf("定义颜色\n");  //当成注释就行别删
 		color['.'] = 0xA0;     // grass
 		color[','] = 0x60;     // dirt
@@ -1450,6 +1497,7 @@ extern "C++"{//游戏
 		color['_'] = 0x3F;     // water
 		color['='] = 0x6E;     // wood
 		color['-'] = 0xE6;     // plank
+		color['O'] = 0x87;     // stone furnace
 		printf("临摹生物\n");
 		eco['V']=0xe6;
 		enttname['V']="牛";
@@ -1479,13 +1527,18 @@ extern "C++"{//游戏
 		itemsize[7] = 1;
 		itemname[8] = "生牛肉";
 		itemsize[8] = 1;
+	  burnresult[8] = 10;
 		itemname[9] = "毛线";
 		itemsize[9] = 1;
-		itemname[10]= "猫屎";
+		itemname[10]= "熟牛肉";
 		itemsize[10]= 1;
+		itemname[11]= "石炉";
+		itemsize[11]= 1;
+		printf("进行神秘操作\n");
 		intable['T'] = 1;
 		intable['o'] = 1;
 		intable['w'] = 1;
+		intable['O'] = 1;
 		message = "";
 		printf("搭建碰撞箱\n");
 		wall['=']=1;
@@ -1493,6 +1546,7 @@ extern "C++"{//游戏
 		ings.push_back(ing(1, 3, 1, 1, 1, 1, 0, 0, 0, 5));
 		ings.push_back(ing(1, 3, 1, 1, 2, 1, 0, 0, 0, 6, 3));
 		ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 7, 4));
+		ings.push_back(ing(1, 1, 3, 0, 0, 0, 0, 0, 0,11, 1));
 		printf("吃石化其他变量\n");
 		if(reset){
 			inventory.vaults.clear();
@@ -1647,9 +1701,9 @@ extern "C++"{//游戏
 		
 		//devmode
 //	inventory.vaults[0].slots[0].item=1;
-//	inventory.vaults[0].slots[0].qutt=1;
+//	inventory.vaults[0].slots[0].qutt=10;
 //	inventory.vaults[0].slots[1].item=2;
-//	inventory.vaults[0].slots[1].qutt=2;
+//	inventory.vaults[0].slots[1].qutt=20;
 //	inventory.vaults[0].slots[2].item=3;
 //	inventory.vaults[0].slots[2].qutt=3;
 		
@@ -1709,6 +1763,8 @@ extern "C++"{//游戏
 			printf("[坐标:<%d,%d>] ", posx, posy);
 			scta(0x8A);
 			printf("[体力:%d] ", force);
+			scta(0x8C);
+			printf("[血量:%d] ", hp);
 			
 			scta(0x8F);
 			if ((showed -= 0.05) > 0) {
@@ -1843,6 +1899,19 @@ extern "C++"{//游戏
 						hp-=2;
 						force+=50;
 					}
+					if(inventory.hand.item==10){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						message="血量+10,体力+200";
+						showed=1;
+						hp+=10;
+						force+=200;
+					}
+					if(inventory.hand.item==11){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						build('O',11);
+					}
 					cooldown=10;
 				}
 			}
@@ -1942,6 +2011,12 @@ extern "C++"{//游戏
 					world[posy][posx] = '.';
 				}
 			}
+			if (world[posy][posx] == 'O') {
+				detect('P') {
+					itemsystem(0,1);
+				}
+			}
+			
 			if (world[posy][posx] == '_') {
 				if(moved){
 					for(unsigned i=0;i<status.size();i++){
