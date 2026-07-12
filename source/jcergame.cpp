@@ -1,12 +1,13 @@
 // Copyleft(c) lihaoqian,LiJunyi
 // 版权所有，亲全必究
-// 任何试图盗窃此代码的人会被JC
+// 任何试图盗窃此代码的人会被线上/线下真实，并被JC
+// luyiming将会永远被钉在某处的耻辱柱上(by copying benghuai·dongbeitiedao)
 // 请在编译时添加命令"-std=c++11"！！！
 // extern的作用是让部分可以收起
 #define bigver 0
 #define midver 0
 #define smaver 7
-#define snpsot 0
+#define snpsot 1
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -92,6 +93,10 @@ extern "C++"{//更新日志
 		versions[0][0][7][0].addintro("加入了实体。");
 		versions[0][0][7][0].addintro("目前的实体类型：牛、猫（这就是为什么它叫做铲屎更新）");
 		versions[0][0][7][0].addintro("新物品：生牛肉，毛线");
+		versions[0][0][7][1].init(26,7,11,"");
+		versions[0][0][7][1].addintro("你现在可以食用生牛肉了。");
+		versions[0][0][7][1].addintro("对luyiming的无耻盗窃行为进行了强烈谴责。");
+		versions[0][0][7][1].addintro("加入了血条。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -289,7 +294,8 @@ extern "C++"{//有用？的函数
 		cout << "                   ︵ \n";
 		cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
 		cout << "                   ︶ \n";
-		cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。";
+		cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。\n";
+		cout << "感谢wangbohan,wangzhenglong等人的随机数种子及生物战斗的灵感。\n";
 		cout << "按 ESC 退出。";
 		while (true) {
 			detect(VK_ESCAPE) {
@@ -373,9 +379,11 @@ extern "C++"{//变量
 	bool intable[255];    // interact able,It should be map<char,bool>
 	bool wall[255];       // pass ability, It should be map<char,bool>
 	bool bad[255];       // pass ability, It should be map<char,bool>
-	bool alive = 1;       // is alive
+	bool alive = 1;       // is al3ive
 	int speed = 1;        // delay between movements (ms)
 	int force = 114514;   // -1 per movement
+	int hp = 50;   
+	int cooldown=0;
 	vector<effect> status;// status
 	double showed;
 	int damage = 1;
@@ -1368,7 +1376,7 @@ extern "C++"{//游戏内使用函数
 	void battle(int tx,int ty){//x!=x y!=y x=y y=x
 		anicls();
 		while(entty[tx][ty].hp>0){
-			cout<<"这只 "<<enttname[entty[tx][ty].type]<<" 想和你碰一碰！！\n\n";
+			cout<<"你遭遇了 "<<enttname[entty[tx][ty].type]<<" ！！\n\n("<<hp<<")";
 			scta(0xf6);
 			cout<<"@";
 			scta(0xf);
@@ -1376,7 +1384,7 @@ extern "C++"{//游戏内使用函数
 			scta(eco[entty[tx][ty].type]);
 			cout<<entty[tx][ty].type;
 			scta(0xf);
-			cout<<"("<<entty[tx][ty].hp<<")\n[轻击(Q)] [重击(W)]\n";
+			cout<<"("<<entty[tx][ty].hp<<")\n[轻击(Q)] [重击(W)] [跳过(E)]\n";
 			while(1){
 				detect('Q'){
 					entty[tx][ty].hp-=damage;
@@ -1392,6 +1400,13 @@ extern "C++"{//游戏内使用函数
 					Sleep(1000);
 					break;
 				}
+				detect('E'){
+//					entty[tx][ty].hp-=ceil(damage*1.5);
+//					force-=2;
+					cout<<"你是滚木吗？打得一拳开，免得百拳来……\n";
+					Sleep(1000);
+					break;
+				}
 			}
 			
 			if(entty[tx][ty].hp<=0){
@@ -1402,7 +1417,7 @@ extern "C++"{//游戏内使用函数
 				return;
 			}
 			system("cls");
-			cout<<"这只 "<<enttname[entty[tx][ty].type]<<" 发现你没有血条，跳过了回合\n\n";
+			cout<<"这只 "<<enttname[entty[tx][ty].type]<<" 开始疯狂地撕咬！！\n\n("<<hp<<")";
 			scta(0xf6);
 			cout<<"@";
 			scta(0xf);
@@ -1410,7 +1425,13 @@ extern "C++"{//游戏内使用函数
 			scta(eco[entty[tx][ty].type]);
 			cout<<entty[tx][ty].type;
 			scta(0xf);
-			Sleep(2000);
+			Sleep(1000);
+			cout<<"\n咬到了你，造成了2点伤害\n";
+			hp-=2;
+			if(hp<0){
+				dead("失血过多");
+			}
+			Sleep(1000);
 			system("cls");
 		}
 	}
@@ -1487,6 +1508,7 @@ extern "C++"{//游戏
 			inventory.hcl.slots.push_back(tpltslt);
 			posx = 500;
 			posy = 500;
+			hp=50;
 		}
 		inventory.rfwt();
 		alive = 1;
@@ -1693,7 +1715,7 @@ extern "C++"{//游戏
 				cout << message << "\n";
 			} else {
 				scta(0x0);
-				cout << "                        "
+				cout << "                                 "
 				<< "\n";
 			}
 			scta(0xF);
@@ -1789,15 +1811,40 @@ extern "C++"{//游戏
 			}else{
 				damage=1;
 			}
-			if(press('E')&&inventory.hand.item==6){
-				inventory.hand.qutt--;
-				inventory.refresh();
-				build('=',6);
-			}
-			if(press('E')&&inventory.hand.item==7){
-				inventory.hand.qutt--;
-				inventory.refresh();
-				build('-',7);
+			if(cooldown) cooldown--;
+			detect('E'){
+				if(cooldown){
+					message="冷却中……";
+					showed=1;
+				}else{
+					if(inventory.hand.item==6){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						build('=',6);
+					}
+					if(inventory.hand.item==7){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						build('-',7);
+					}
+					if(inventory.hand.item==4){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						message="太酸了,血量+5,体力+5";
+						showed=1;
+						hp+=5;
+						force+=5;
+					}
+					if(inventory.hand.item==8){
+						inventory.hand.qutt--;
+						inventory.refresh();
+						message="没熟,血量-2,体力+50";
+						showed=1;
+						hp-=2;
+						force+=50;
+					}
+					cooldown=10;
+				}
 			}
 			
 			detect(VK_ESCAPE) {
