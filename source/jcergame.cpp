@@ -5,8 +5,8 @@
 // extern的作用是让部分可以收起
 #define bigver 0
 #define midver 0
-#define smaver 6
-#define snpsot 3
+#define smaver 7
+#define snpsot 0
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -23,12 +23,13 @@ extern "C++"{//其他预处理
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
 #define press(VK_NONAME) ((GetAsyncKeyState(VK_NONAME) & 0x8000) ? 1 : 0)
-#define lborder 500
-#define uborder 500
-#define rborder 4500
-#define dborder 4500
+#define lborder 100
+#define uborder 100
+#define rborder 900
+#define dborder 900
 #define detect(VK_NONAME) if (press(VK_NONAME))
 #define detects(VK_NONAME, int) if (press(VK_NONAME) || press(int))
+#define time(int) ((chrono::steady_clock::now().time_since_epoch().count()))
 }
 extern "C++"{//更新日志
 	struct version{
@@ -87,6 +88,10 @@ extern "C++"{//更新日志
 		versions[0][0][6][2].addintro("更新了版本的记录方式。");
 		versions[0][0][6][3].init(26,6,6,"");
 		versions[0][0][6][3].addintro("增加了拆开物品的功能");
+		versions[0][0][7][0].init(26,7,9,"“铲屎更新 Pt.2”");
+		versions[0][0][7][0].addintro("加入了实体。");
+		versions[0][0][7][0].addintro("目前的实体类型：牛、猫（这就是为什么它叫做铲屎更新）");
+		versions[0][0][7][0].addintro("新物品：生牛肉，毛线");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -232,7 +237,16 @@ extern "C++"{//喂鸡百科预处理
 		WIintro[7]="可以放置的不阻挡通行的木头";
 		WIusage[7]="放置木板";
 		WIsourc[7]="合成获得";
-		WIcount=7;
+		WIintro[8]="生的牛肉（？）";
+		WIusage[8]="吃";
+		WIsourc[8]="杀死牛获得";
+		WIintro[9]="字符串（？）";
+		WIusage[9]="合成物品";
+		WIsourc[9]="养猫获得";
+		WIintro[10]="猫的食物残渣。兑。";
+		WIusage[10]="合成物品";
+		WIsourc[10]="养猫获得";
+		WIcount=10;
 	}
 }  // WeijiPedia
 extern "C++"{//有用？的函数
@@ -323,15 +337,42 @@ extern "C++"{//结构体
 			num=k;
 		}
 	};
+	struct dropsheet{
+		int item1,min1,max1;
+		int item2,min2,max2;
+		int item3,min3,max3;
+		void init(int a,int c,int d,
+				  int e,int g,int h,
+				  int i,int k,int l){
+			item1=a;
+			min1=c;
+			max1=d;
+			item2=e;
+			min2=g;
+			max2=h;
+			item3=i;
+			min3=k;
+			max3=l;
+		}
+	};
+	struct entity{
+		bool be=0;
+		char type='V';
+		int hp=10;
+	};
 }
 extern "C++"{//变量
 	string message;
 	map<char, int> color;
 	map<int, string> itemname;
 	map<int, int> itemsize;
+	map<char, int> eco;   // entity color
+	map<int, string> enttname;
+	map<char, dropsheet> eds; 
 	vector<ing> ings;
 	bool intable[255];    // interact able,It should be map<char,bool>
 	bool wall[255];       // pass ability, It should be map<char,bool>
+	bool bad[255];       // pass ability, It should be map<char,bool>
 	bool alive = 1;       // is alive
 	int speed = 1;        // delay between movements (ms)
 	int force = 114514;   // -1 per movement
@@ -339,8 +380,10 @@ extern "C++"{//变量
 	double showed;
 	int damage = 1;
 	int vision = 0x0000;
-	char world[5000][5000];
-	char copwd[5000][5000];
+	char world[1000][1000];
+	char copwd[1000][1000];
+	entity entty[1000][1000];
+//	vult rfitm[5000][5000]; //refer item,但是类型没有定义
 	int posx, posy;
 	ofstream out;
 	ifstream in;
@@ -366,7 +409,7 @@ extern "C++"{//物品系统
 	}tpltslt,tempslt,tempslot;
 	struct vult{
 		vector<slot> slots;
-		string name="口袋";
+		string name="67";
 		int weight(){
 			int totwt=0;
 			for(slot sl:slots){
@@ -911,6 +954,17 @@ extern "C++"{//物品系统
 		tempvlt.slots[0].qutt=qutt;
 		itemsystem(1);
 	}
+	void takeadropsheet(dropsheet ds){
+		tempvlt=tpltvlt;
+		tempvlt.name="地上(退出界面后消失)";
+		srand(time(0));
+		tempvlt.slots.push_back({ds.item1,ds.min1+rand()%(ds.max1-ds.min1+1)});
+		srand(time(0));
+		tempvlt.slots.push_back({ds.item2,ds.min2+rand()%(ds.max2-ds.min2+1)});
+		srand(time(0));
+		tempvlt.slots.push_back({ds.item3,ds.min3+rand()%(ds.max3-ds.min3+1)});
+		itemsystem(1);
+	}
 }
 extern "C++"{//游戏内使用函数
 	void weijipedia() {
@@ -1311,6 +1365,55 @@ extern "C++"{//游戏内使用函数
 			}
 		}
 	}
+	void battle(int tx,int ty){//x!=x y!=y x=y y=x
+		anicls();
+		while(entty[tx][ty].hp>0){
+			cout<<"这只 "<<enttname[entty[tx][ty].type]<<" 想和你碰一碰！！\n\n";
+			scta(0xf6);
+			cout<<"@";
+			scta(0xf);
+			cout<<"            ";
+			scta(eco[entty[tx][ty].type]);
+			cout<<entty[tx][ty].type;
+			scta(0xf);
+			cout<<"("<<entty[tx][ty].hp<<")\n[轻击(Q)] [重击(W)]\n";
+			while(1){
+				detect('Q'){
+					entty[tx][ty].hp-=damage;
+					force-=1;
+					cout<<"造成了"<<damage<<"点伤害，体力-1\n";
+					Sleep(1000);
+					break;
+				}
+				detect('W'){
+					entty[tx][ty].hp-=ceil(damage*1.5);
+					force-=2;
+					cout<<"造成了"<<ceil(damage*1.5)<<"点伤害，体力-2\n";
+					Sleep(1000);
+					break;
+				}
+			}
+			
+			if(entty[tx][ty].hp<=0){
+				cout<<enttname[entty[tx][ty].type]<<" 死了！！\n";
+				Sleep(1000);
+				entty[tx][ty].be=0;
+				takeadropsheet(eds[entty[tx][ty].type]);
+				return;
+			}
+			system("cls");
+			cout<<"这只 "<<enttname[entty[tx][ty].type]<<" 发现你没有血条，跳过了回合\n\n";
+			scta(0xf6);
+			cout<<"@";
+			scta(0xf);
+			cout<<"            ";
+			scta(eco[entty[tx][ty].type]);
+			cout<<entty[tx][ty].type;
+			scta(0xf);
+			Sleep(2000);
+			system("cls");
+		}
+	}
 }
 extern "C++"{//游戏
 	void inittheworld(bool reset=1) {
@@ -1326,6 +1429,16 @@ extern "C++"{//游戏
 		color['_'] = 0x3F;     // water
 		color['='] = 0x6E;     // wood
 		color['-'] = 0xE6;     // plank
+		printf("临摹生物\n");
+		eco['V']=0xe6;
+		enttname['V']="牛";
+		eds['V'].init(8,1,3,0,0,0,0,0,0);
+		eco['Q']=0xe8;
+		enttname['Q']="猫";
+		eds['Q'].init(9,2,5,0,0,0,0,0,0);
+		printf("安装导航\n");
+		bad['=']=1;
+		bad['_']=1;
 		printf("定义物品\n");
 		itemname[0] = "空";
 		itemsize[0] = 0;
@@ -1343,6 +1456,12 @@ extern "C++"{//游戏
 		itemsize[6] = 1;
 		itemname[7] = "木板";
 		itemsize[7] = 1;
+		itemname[8] = "生牛肉";
+		itemsize[8] = 1;
+		itemname[9] = "毛线";
+		itemsize[9] = 1;
+		itemname[10]= "猫屎";
+		itemsize[10]= 1;
 		intable['T'] = 1;
 		intable['o'] = 1;
 		intable['w'] = 1;
@@ -1366,8 +1485,8 @@ extern "C++"{//游戏
 			inventory.hcl.slots.push_back(tpltslt);
 			inventory.hcl.slots.push_back(tpltslt);
 			inventory.hcl.slots.push_back(tpltslt);
-			posx = 2500;
-			posy = 2500;
+			posx = 500;
+			posy = 500;
 		}
 		inventory.rfwt();
 		alive = 1;
@@ -1378,8 +1497,8 @@ extern "C++"{//游戏
 		showed = false;
 		if(!reset) goto heyhello;
 		printf("初始化地图\n");
-		for (int i = 0; i < 5000; i++) {
-			for (int j = 0; j < 5000; j++) {
+		for (int i = 0; i < 1000; i++) {
+			for (int j = 0; j < 1000; j++) {
 				world[i][j] = '?';
 			}
 		}
@@ -1475,7 +1594,7 @@ extern "C++"{//游戏
 						copwd[i][j] = 'w';
 				}
 			}
-			if (i % 100 == 0)
+			if (i % 20 == 0)
 				cout << '#';
 		}
 		printf("\n生成可交互的地块\n");
@@ -1485,8 +1604,18 @@ extern "C++"{//游戏
 					world[i][j] = copwd[i][j];
 			}
 		}
+		printf("保护生物多样性\n");
+		for (int i = uborder + 1; i < dborder; i++) {
+			for (int j = lborder + 1; j < rborder; j++) {
+				srand(time(0));
+				if(rand()%2==0) entty[i][j].type='V';
+				if(rand()%2==1) entty[i][j].type='Q';
+			}
+			if (i % 20 == 0)
+				cout << '#';
+		}
 		heyhello:;
-		printf("设立边界\n");
+		printf("\n设立边界\n");
 		for (int i = uborder; i <= dborder; i++) world[i][lborder] = '#';
 		for (int i = uborder; i <= dborder; i++) world[i][rborder] = '#';
 		for (int j = lborder; j <= rborder; j++) world[uborder][j] = '#';
@@ -1573,7 +1702,10 @@ extern "C++"{//游戏
 					if (i == posy && j == posx) {
 						scta(0xF6 | vision);
 						printf("@");
-					} else {
+					} else if (entty[i][j].be){
+						scta(eco[entty[i][j].type] | vision);
+						printf("%c", entty[i][j].type);
+					}else{
 						scta(color[world[i][j]] | vision);
 						printf("%c", world[i][j]);
 					}
@@ -1600,13 +1732,53 @@ extern "C++"{//游戏
 				}
 			}
 			
-			detect('Z'){//item system
+			detect('Z'){//weijipedia
 				weijipedia();
 			}
 			
 			detect('R'){//item system
 				itemsystem();
 			}
+			
+			//load entity
+			for (int i = posy - 10; i <= posy + 10; i++) {
+				for (int j = posx - 25; j <= posx + 25; j++) {
+					if(entty[i][j].be){
+						if(entty[i][j].type=='V'){
+							srand(time(0)+rand()+45);
+							if(rand()%5==1){
+								srand(time(0)+rand()+523);
+								if(rand()%4==0&&!bad[world[i+1][j]]) swap(entty[i+1][j],entty[i][j]);
+								if(rand()%4==1&&!bad[world[i-1][j]]) swap(entty[i-1][j],entty[i][j]);
+								if(rand()%4==2&&!bad[world[i][j+1]]) swap(entty[i][j+1],entty[i][j]);
+								if(rand()%4==3&&!bad[world[i][j-1]]) swap(entty[i][j-1],entty[i][j]);
+							}
+						}if(entty[i][j].type=='Q'){
+							srand(time(0)+rand()+45);
+							if(rand()%3==1){
+								srand(time(0)+rand()+523);
+								if(rand()%4==0&&!bad[world[i+1][j]]) swap(entty[i+1][j],entty[i][j]);
+								if(rand()%4==1&&!bad[world[i-1][j]]) swap(entty[i-1][j],entty[i][j]);
+								if(rand()%4==2&&!bad[world[i][j+1]]) swap(entty[i][j+1],entty[i][j]);
+								if(rand()%4==3&&!bad[world[i][j-1]]) swap(entty[i][j-1],entty[i][j]);
+							}
+						}
+					}
+				}
+			}
+			for (int i = posy - 10; i <= posy + 10; i++) {
+				srand(time(0)+rand()+1431);
+				if(!bad[world[i][posx-26]]) entty[i][posx-26].be=(rand()%700==1);
+				srand(time(0)+rand()+2343);
+				if(!bad[world[i][posx+26]]) entty[i][posx+26].be=(rand()%700==1);
+			}
+			for (int j = posx - 25; j <= posx + 25; j++) {
+				srand(time(0)+rand());
+				if(!bad[world[posy-11][j]]) entty[posy-11][j].be=(rand()%700==1);
+				srand(time(0)+rand());
+				if(!bad[world[posy+11][j]]) entty[posy+11][j].be=(rand()%700==1);
+			}
+			if(entty[posy][posx].be) battle(posy,posx);
 			
 			if (inventory.hand.item==5){
 				damage=4;
@@ -1818,4 +1990,3 @@ int main() {//菜单
 	The_World();
 	return 0;
 }
-
