@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 8
-#define snpsot 0
+#define snpsot 1
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -88,7 +88,7 @@ extern "C++"{//更新日志
 		versions[0][0][6][2].addintro("美化了代码。");
 		versions[0][0][6][2].addintro("更新了版本的记录方式。");
 		versions[0][0][6][3].init(26,6,6,"");
-		versions[0][0][6][3].addintro("增加了拆开物品的功能");
+		versions[0][0][6][3].addintro("增加了拆开物品的功能。");
 		versions[0][0][7][0].init(26,7,9,"“铲屎更新 Pt.2”");
 		versions[0][0][7][0].addintro("加入了实体。");
 		versions[0][0][7][0].addintro("目前的实体类型：牛、猫（这就是为什么它叫做铲屎更新）");
@@ -111,13 +111,21 @@ extern "C++"{//更新日志
 		versions[0][0][8][0].addintro("更新了暂停菜单。");
 		versions[0][0][8][0].addintro("添加了入场动画。");
 		versions[0][0][8][0].addintro("使游戏更没有一周年氛围。");
+		versions[0][0][8][1].init(26,67,67,"图文声象更新 Pt.“文”");
+		versions[0][0][8][1].addintro("修复了Bug。");//9
+		versions[0][0][8][1].addintro("修复了存取存档无法正常使用的Bug。");//0
+		versions[0][0][8][1].addintro("更新了简介（原版权声明）。");//9
+		versions[0][0][8][1].addintro("新功能：设置。");//0
+		versions[0][0][8][1].addintro("新功能：存档列表。");//0
+		versions[0][0][8][1].addintro("更改了菜单（和暂停菜单）的内容。");//5
+		versions[0][0][8][1].addintro("真够累人的，不是吗？（我甚至想把这次更新分成两个部分）");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
 		changedshowedversion:
 		system("cls");
 		versions[_1][_2][_3][_4].print(_1,_2,_3,_4);
-		cout<<"按1增加大版本，按2增加版本，按3增加小版本，按4增加快照，按5自动切换下一个版本\n";
+		cout<<"按1增加大版本，按2增加版本，按3增加小版本，按4增加快照，按5切换下一个版本\n";
 		cout<<"按Shift改为减少/上一个,按Q退出\n";
 		while(1){
 			if(press(VK_SHIFT)){
@@ -283,7 +291,13 @@ extern "C++"{//喂鸡百科预处理
 		WMlist.push_back('Q');
 	}
 }  // WeijiPedia
+extern "C++"{//设置预处理
+	bool raisecolor=1;
+	bool samsara=0;
+	bool clsanimation=1;
+}
 extern "C++"{//有用？的函数
+	int main();
 	int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
 	void setpos(float x, float y) {
 		COORD pos;
@@ -293,10 +307,16 @@ extern "C++"{//有用？的函数
 	}
 	
 	void scta(int x) {
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);  // set console color
+		if(raisecolor||x==0||x==7||x==8||x==15) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), x);  // set console color
+		else SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
 	}
 	
 	void anicls() {
+		if(clsanimation==0){
+			system("cls");
+			Sleep(200);
+			return;
+		}
 		scta(0x0);
 		for (int i = 2; i <= 66; i++) {
 			for (int j = 1; j <= i; j++) {
@@ -320,6 +340,34 @@ extern "C++"{//有用？的函数
 	void banquan() {
 		anicls();
 		setpos(0, 0);
+		cout << "             ━┳━┏━━┏━━┏━┓┏━━┏━┓┏┳┓┏━━\n";
+		cout << "               ┃  ┃    ┣━━┣┳┛┃  ┓┣━┫┃┃┃┣━━\n";
+		cout << "             ━┛  ┗━━┗━━┃┗━┗━┛┃  ┃┃┃┃┗━━\n\n";
+		cout << "《JCerGame》是由 ";
+		scta(0x9c0f);
+		cout<<"JCer";
+		scta(0xf);
+		cout<<" Lihaoqian & LiJunyi制作发行的一款开放世界冒险游戏，于1939年1月底立项，原初测试于1945年6月21日开启，再临测试于1967年3月19日开启，启程测试于1978年6月11日开启，PC版技术性开放测试于1991年9月15日开启，公测于2025年7月14日开启。在数据方面，";
+		scta(0x9c0f);
+		cout<<"iOS、 ";
+		scta(0xf);
+		cout<<"PC";
+		scta(0x9c0f);
+		cout<<" 、Android、鸿蒙平台";
+		scta(0xf);
+		cout<<"之间的账号数据并不互通，玩家不可以在同一账号下切换设备";
+		scta(0x9c0f);
+		cout<<" （而且没有账号） ";
+		scta(0xf);
+		cout<<"。游戏发生在一个被称作“world”的幻想世界，在这里，被“玩家”选中的人将被授予“喂鸡百科”，导引“查资料”之力。玩家将扮演一位名为“@”的神秘角色，在自由的旅行中邂逅 ";
+		scta(0x9c0f);
+		cout<<"性格各异";
+		scta(0xf);
+		cout<<" 、能力独特的东西们， ";
+		scta(0x9c0f);
+		cout<<"和他们一起击败老牧师，找回失散的浮木——同时，逐步发掘“十八码”的真相。";
+		scta(0xf);
+		cout<<"总结：当我的世界玩\n\n";
 		cout << "                   ︵ \n";
 		cout << "版权所有 Copyleft (Ｃ) 2025-2026 lihaoqian & LiJunyi 所有右重新服务。\n";
 		cout << "                   ︶ \n";
@@ -343,7 +391,11 @@ extern "C++"{//有用？的函数
 		delaymsg("\n");
 		delaymsg("按Q退出\n");
 		while (1) {
-			detect('Q') { exit(0); }
+			detect('Q') { 
+				if(samsara){
+					main();
+				}else exit(0);
+			}
 			Sleep(10);
 		}
 	}
@@ -1386,6 +1438,31 @@ extern "C++"{//游戏内使用函数
 			// TODO
 		}
 	}
+	void settings(){
+		anicls();
+		int pntr=0;
+		while(1){
+			setpos(0,0);
+			scta((pntr==0)?6:15);
+			cout<<"渲染颜色------------------------------------------"<<(raisecolor  ?"[  [开]":"[关]  ]")<<endl;
+			scta((pntr==1)?6:15);
+			cout<<"轮回（死亡后重新开始游戏）------------------------"<<(samsara     ?"[  [开]":"[关]  ]")<<endl;
+			scta((pntr==2)?6:15);
+			cout<<"清屏动画------------------------------------------"<<(clsanimation?"[  [开]":"[关]  ]")<<endl;
+			scta((pntr==3)?6:15);
+			cout<<"退出设置";
+			detect(VK_UP) pntr=(pntr+3)%4,Sleep(100);
+			detect(VK_DOWN) pntr=(pntr+5)%4,Sleep(100);
+			detect(VK_RETURN){
+				if(pntr==0) raisecolor=!raisecolor;
+				if(pntr==1) samsara=!samsara;
+				if(pntr==2) clsanimation=!clsanimation;
+				if(pntr==3) break;
+				Sleep(100);
+			}
+		}
+		anicls();
+	}
 	void whenmove() {
 		force--;
 		Sleep(speed);
@@ -1745,12 +1822,12 @@ extern "C++"{//游戏
 		printf("启动！\n");
 		
 		//devmode
-	// inventory.vaults[0].slots[0].item=1;
-	// inventory.vaults[0].slots[0].qutt=10;
-	// inventory.vaults[0].slots[1].item=2;
-	// inventory.vaults[0].slots[1].qutt=20;
-	// inventory.vaults[0].slots[2].item=3;
-	// inventory.vaults[0].slots[2].qutt=30;
+//	inventory.vaults[0].slots[0].item=1;
+//	inventory.vaults[0].slots[0].qutt=10;
+//	inventory.vaults[0].slots[1].item=2;
+//	inventory.vaults[0].slots[1].qutt=20;
+//	inventory.vaults[0].slots[2].item=3;
+//	inventory.vaults[0].slots[2].qutt=30;
 		
 //		inventory.vaults[0].slots[0].item=1;
 //		inventory.vaults[0].slots[0].qutt=6767;
@@ -1768,7 +1845,7 @@ extern "C++"{//游戏
 			for(int j=lborder;j<=rborder;j++){
 				out<<world[i][j];
 			}out<<endl;
-			if(i%100==0) cout<<'.';
+			if(i%20==0) cout<<'.';
 		}
 		inventory.wi();
 		out<<" "<<posx<<" "<<posy;
@@ -1790,11 +1867,11 @@ extern "C++"{//游戏
 			for(int j=lborder;j<=rborder;j++){
 				in>>world[i][j];
 			}
-			if(i%100==0) cout<<'.';
+			if(i%20==0) cout<<'.';
 		}
 		inventory.ri();
-		in.close();
 		in>>posx>>posy;
+		in.close();
 		cout<<endl<<"加载完毕。";
 		Sleep(100);
 		anicls();
@@ -2002,6 +2079,7 @@ extern "C++"{//游戏
 					detect(VK_UP) pointer = (pointer + 4) % 5, Sleep(100);
 					detect(VK_RETURN) {
 						if (pointer == 0) {
+							anicls();
 							break;
 						}
 						if (pointer == 1) {
@@ -2143,24 +2221,24 @@ int main() {//菜单
 		if(i==6) scta(0x8);
 		if(i==7) scta(0x0);
 		cout<<endl<<endl<<endl;
-		cout<<"                                    ┏━┓\n";
-		cout<<"                                    ┣━┫\n";
-		cout<<"                                    ┃  ┃\n";
-		cout<<"                           ┏━━┏━┓┏┳┓┏━━\n";
-		cout<<"                           ┃  ┓┣━┫┃┃┃┣━━\n";
-		cout<<"                           ┗━┛┃  ┃┃┃┃┗━━\n";
-		cout<<"            ┏━┓┏━┓┏━━┏━━┏━━┏┓┃━┳━┏━━┏┓  \n";
-		cout<<"            ┣━┛┣┳┛┣━━┗━┓┣━━┃┃┃  ┃  ┣━━┃┗┓\n";
-		cout<<"            ┃    ┃┗━┗━━━━┛┗━━┃┗┛  ┃  ┗━━┗━┛\n";
-		cout<<"                                 ┏┓  ┃  ┃\n";
-		cout<<"                                 ┣┻┓┗┳┛\n";
-		cout<<"                                 ┗━┛  ┃\n";
-		cout<<"            ┃    ━┳━┃  ┃┏━┓┏━┓┏━┓━┳━┏━┓┏┓┃\n";
-		cout<<"            ┃      ┃  ┣━┫┣━┫┃  ┃┃━╋  ┃  ┣━┫┃┃┃\n";
-		cout<<"            ┗━━━┻━┃  ┃┃  ┃┗━┛┗━┛━┻━┃  ┃┃┗┛\n";
-		cout<<"                 ┏┓      ┏━┓━┳━┃  ┃┏━━┏━┓┏━━\n";
-		cout<<"               ┏╋┛      ┃  ┃  ┃  ┣━┫┣━━┣┳┛┗━┓\n";
-		cout<<"               ┗╋━      ┗━┛  ┃  ┃  ┃┗━━┃┗━━━┛\n";
+		cout<<"                                  ┏━┓\n";
+		cout<<"                                  ┣━┫\n";
+		cout<<"                                  ┃  ┃\n";
+		cout<<"                         ┏━━┏━┓┏┳┓┏━━\n";
+		cout<<"                         ┃  ┓┣━┫┃┃┃┣━━\n";
+		cout<<"                         ┗━┛┃  ┃┃┃┃┗━━\n";
+		cout<<"          ┏━┓┏━┓┏━━┏━━┏━━┏┓┃━┳━┏━━┏┓  \n";
+		cout<<"          ┣━┛┣┳┛┣━━┗━┓┣━━┃┃┃  ┃  ┣━━┃┗┓\n";
+		cout<<"          ┃    ┃┗━┗━━━━┛┗━━┃┗┛  ┃  ┗━━┗━┛\n";
+		cout<<"                               ┏┓  ┃  ┃\n";
+		cout<<"                               ┣┻┓┗┳┛\n";
+		cout<<"                               ┗━┛  ┃\n";
+		cout<<"          ┃    ━┳━┃  ┃┏━┓┏━┓┏━┓━┳━┏━┓┏┓┃\n";
+		cout<<"          ┃      ┃  ┣━┫┣━┫┃  ┃┃━╋  ┃  ┣━┫┃┃┃\n";
+		cout<<"          ┗━━━┻━┃  ┃┃  ┃┗━┛┗━┛━┻━┃  ┃┃┗┛\n";
+		cout<<"               ┏┓      ┏━┓━┳━┃  ┃┏━━┏━┓┏━━\n";
+		cout<<"             ┏╋┛      ┃  ┃  ┃  ┣━┫┣━━┣┳┛┗━┓\n";
+		cout<<"             ┗╋━      ┗━┛  ┃  ┃  ┃┗━━┃┗━━━┛\n";
 		if(i==4) Sleep(1500);
 		Sleep(50);
 		setpos(0,0);
@@ -2175,9 +2253,9 @@ int main() {//菜单
 		if(i==6) scta(0x8);
 		if(i==7) scta(0x0);
 		cout<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl;
-		cout<<"                                 ┏━━━━┓\n";
-		cout<<"                                 ┣━┓    ┃\n";
-		cout<<"                                 ┗━┛    ┃\n";
+		cout<<"                               ┏━━━━┓\n";
+		cout<<"                               ┣━┓    ┃\n";
+		cout<<"                               ┗━┛    ┃\n";
 		if(i==4) Sleep(1000);
 		Sleep(50);
 		setpos(0,0);
@@ -2193,11 +2271,11 @@ int main() {//菜单
 		cout << "             ━┛  ┗━━┗━━┃┗━┗━┛┃  ┃┃┃┃┗━━\n";
 		cout<<endl;
 		cout << "                      ______________________________         \n";
-		cout << "                      |       开 始 新 游 戏       |         \n";
+		cout << "                      |        开 始  游 戏        |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		cout << "                      ______________________________         \n";
-		cout << "                      |          翻 存 档          |         \n";
+		cout << "                      |           设  置           |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		cout << "                      ______________________________         \n";
@@ -2205,7 +2283,7 @@ int main() {//菜单
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		cout << "                      ______________________________         \n";
-		cout << "                      |        版 权  声 明        |         \n";
+		cout << "                      |        游 戏  简 介        |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		cout << "                      ______________________________         \n";
@@ -2224,12 +2302,12 @@ int main() {//菜单
 		cout<<endl;
 		scta(pointer == 0 ? 0x6 : 0xF);
 		cout << "                      ______________________________         \n";
-		cout << "                      |       开 始 新 游 戏       |         \n";
+		cout << "                      |        开 始  游 戏        |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		scta(pointer == 1 ? 0x6 : 0xF);
 		cout << "                      ______________________________         \n";
-		cout << "                      |          翻 存 档          |         \n";
+		cout << "                      |           设  置           |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		scta(pointer == 2 ? 0x6 : 0xF);
@@ -2239,7 +2317,7 @@ int main() {//菜单
 		cout<<endl;
 		scta(pointer == 3 ? 0x6 : 0xF);
 		cout << "                      ______________________________         \n";
-		cout << "                      |        版 权  声 明        |         \n";
+		cout << "                      |        游 戏  简 介        |         \n";
 		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 		cout<<endl;
 		scta(pointer == 4 ? 0x6 : 0xF);
@@ -2256,10 +2334,7 @@ int main() {//菜单
 				break;
 			}
 			if (pointer == 1) {
-				loadtheworld();
-				inittheworld(0);
-				The_World();
-				return 0;
+				settings();
 			}
 			if (pointer == 2) {
 				anicls();
