@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 7
-#define snpsot 2
+#define snpsot 3
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -101,6 +101,10 @@ extern "C++"{//更新日志
 		versions[0][0][7][2].addintro("加入了石炉。");
 		versions[0][0][7][2].addintro("加入了熟牛肉。");
 		versions[0][0][7][2].addintro("显示了血条。");
+		versions[0][0][7][3].init(26,7,14,"一周年更新");
+		versions[0][0][7][3].addintro("修复了Bug。");
+		versions[0][0][7][3].addintro("加入了生物的喂鸡百科内容。");
+		versions[0][0][7][3].addintro("使游戏更有一周年氛围。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -190,6 +194,9 @@ extern "C++"{//喂鸡百科预处理
 	map<int,string> WIusage;
 	map<int,string> WIsourc;
 	int WIcount;
+	map<char,string> WMname;
+	map<char,string> WMintro;
+	vector<char> WMlist;
 	void weijiinit() {
 		WBname['.'] = "草坪";
 		WBintro['.'] = "思穿盆底。";
@@ -262,6 +269,12 @@ extern "C++"{//喂鸡百科预处理
 		WIusage[11]="放置石炉";
 		WIsourc[11]="合成获得";
 		WIcount=11;
+		WMname['V'] = "牛";
+		WMintro['V'] = "字符画的牛太大，这里放不下，所以没有介绍，";
+		WMlist.push_back('V');
+		WMname['Q'] = "猫";
+		WMintro['Q'] = "我们会在不久的二周年增加撸猫功能……";
+		WMlist.push_back('Q');
 	}
 }  // WeijiPedia
 extern "C++"{//有用？的函数
@@ -1324,7 +1337,32 @@ extern "C++"{//游戏内使用函数
 					detect(VK_ESCAPE) return;
 				}
 			}
-			
+			detect('E') {
+				anicls();
+				for (unsigned i = 0; i < WMlist.size(); i++) {
+					setpos(0, 0);
+					scta(eco[WMlist[i]]);
+					for (int a = 0; a < 5; a+=2) {
+						for (int b = 0; b < 9; b+=2) {
+							cout << WMlist[i];
+						}
+						cout << endl;
+						cout << endl;
+					}
+					scta(0xF);
+					cout << WMname[WMlist[i]] << endl
+					<< WMintro[WMlist[i]] << endl
+					<< "按空格下一个，按Q继续游戏";
+					while (1) {
+						detect(VK_SPACE) { break; }
+						detect('Q') {
+							anicls();
+							return;
+						}
+					}
+					anicls();
+				}
+			}
 			detect('T'){
 				anicls();
 				setpos(0, 0);
@@ -1450,7 +1488,7 @@ extern "C++"{//游戏内使用函数
 				detect('E'){
 //					entty[tx][ty].hp-=ceil(damage*1.5);
 //					force-=2;
-					cout<<"你是滚木吗？打得一拳开，免得百拳来……\n";
+					cout<<"你跳过了回合\n";
 					Sleep(1000);
 					break;
 				}
@@ -1700,12 +1738,12 @@ extern "C++"{//游戏
 		printf("启动！\n");
 		
 		//devmode
-//	inventory.vaults[0].slots[0].item=1;
-//	inventory.vaults[0].slots[0].qutt=10;
-//	inventory.vaults[0].slots[1].item=2;
-//	inventory.vaults[0].slots[1].qutt=20;
-//	inventory.vaults[0].slots[2].item=3;
-//	inventory.vaults[0].slots[2].qutt=3;
+	// inventory.vaults[0].slots[0].item=1;
+	// inventory.vaults[0].slots[0].qutt=10;
+	// inventory.vaults[0].slots[1].item=2;
+	// inventory.vaults[0].slots[1].qutt=20;
+	// inventory.vaults[0].slots[2].item=3;
+	// inventory.vaults[0].slots[2].qutt=30;
 		
 //		inventory.vaults[0].slots[0].item=1;
 //		inventory.vaults[0].slots[0].qutt=6767;
@@ -2067,7 +2105,7 @@ int main() {//菜单
 	while (1) {
 		setpos(0, 0);
 		scta(0xF);
-		cout << "欢迎来到 JCerGame!\n";
+		cout << "JCerGame 一周年快乐!\n";
 		scta(pointer == 0 ? 0x6 : 0xF);
 		cout << "* 开始新游戏\n";
 		scta(pointer == 1 ? 0x6 : 0xF);
@@ -2077,7 +2115,7 @@ int main() {//菜单
 		scta(pointer == 3 ? 0x6 : 0xF);
 		cout << "* 版权声明\n";
 		scta(pointer == 4 ? 0x6 : 0xF);
-		cout << "* 我不玩\n";
+		cout << "* 我不玩（怎么会呢）\n";
 		scta(0xF);
 		cout << "*使用↑↓选择，Enter以确定";
 		detect(VK_DOWN) pointer = (pointer + 6) % 5, Sleep(100);
@@ -2102,6 +2140,7 @@ int main() {//菜单
 				banquan();
 			}
 			if (pointer == 4) {
+				MessageBox(NULL,"你这个怪兽！！！","Not JCerGame by lihaoqian & LiJunyi",MB_OK|MB_ICONWARNING);
 				return 0;
 			}
 		}
