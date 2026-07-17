@@ -6,8 +6,8 @@
 // extern的作用是让部分可以收起
 #define bigver 0
 #define midver 0
-#define smaver 7
-#define snpsot 3
+#define smaver 8
+#define snpsot 0
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -83,7 +83,7 @@ extern "C++"{//更新日志
 		versions[0][0][6][0].addintro("更新了合成系统。");
 		versions[0][0][6][0].addintro("更新了存档系统。");
 		versions[0][0][6][1].init(26,4,18,"");
-		versions[0][0][6][1].addintro("更新了维基百科中的物品介绍。");
+		versions[0][0][6][1].addintro("更新了喂鸡百科中的物品介绍。");
 		versions[0][0][6][2].init(26,5,30,"");
 		versions[0][0][6][2].addintro("美化了代码。");
 		versions[0][0][6][2].addintro("更新了版本的记录方式。");
@@ -105,6 +105,12 @@ extern "C++"{//更新日志
 		versions[0][0][7][3].addintro("修复了Bug。");
 		versions[0][0][7][3].addintro("加入了生物的喂鸡百科内容。");
 		versions[0][0][7][3].addintro("使游戏更有一周年氛围。");
+		versions[0][0][8][0].init(26,7,14,"图文声象更新 Pt.“图”");
+		versions[0][0][8][0].addintro("修复了Bug。");
+		versions[0][0][8][0].addintro("更新了菜单。");
+		versions[0][0][8][0].addintro("更新了暂停菜单。");
+		versions[0][0][8][0].addintro("添加了入场动画。");
+		versions[0][0][8][0].addintro("使游戏更没有一周年氛围。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -1344,7 +1350,7 @@ extern "C++"{//游戏内使用函数
 					scta(eco[WMlist[i]]);
 					for (int a = 0; a < 5; a+=2) {
 						for (int b = 0; b < 9; b+=2) {
-							cout << WMlist[i];
+							cout <<" "<< WMlist[i];
 						}
 						cout << endl;
 						cout << endl;
@@ -1510,8 +1516,9 @@ extern "C++"{//游戏内使用函数
 			scta(eco[entty[tx][ty].type]);
 			cout<<entty[tx][ty].type;
 			scta(0xf);
+			cout<<"("<<entty[tx][ty].hp<<")\n";
 			Sleep(1000);
-			cout<<"\n咬到了你，造成了2点伤害\n";
+			cout<<"咬到了你，造成了2点伤害\n";
 			hp-=2;
 			if(hp<0){
 				dead("失血过多");
@@ -1834,7 +1841,7 @@ extern "C++"{//游戏
 				cout<<WEname[i.name]<<i.value<<" ";
 			}
 			scta(0xF);
-			cout<<"                                                                       ";
+			cout<<"                             ";
 			cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"            \n";
 			vision = 0x0;
 			bool moved=0;
@@ -1960,19 +1967,39 @@ extern "C++"{//游戏
 				while (1) {
 					setpos(0, 0);
 					scta(0xF);
-					cout << "游戏已暂停\n";
+					cout << "                      ┏━┓┏━┓┃  ┃┏━━┏━━\n";
+					cout << "                      ┣━┛┣━┫┃  ┃┗━┓┣━━\n";
+					cout << "                      ┃    ┃  ┃┗━┛━━┛┗━━\n";
+					cout<<endl;
 					scta(pointer == 0 ? 0x6 : 0xF);
-					cout << "* 继续游戏\n";
+					cout << "                      ______________________________         \n";
+					cout << "                      |        继 续  游 戏        |         \n";
+					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+					cout<<endl;
 					scta(pointer == 1 ? 0x6 : 0xF);
-					cout << "* 查看喂鸡百科（游戏中按Z）\n";
+					cout << "                      ______________________________         \n";
+					cout << "                      |查看喂鸡百科(游戏中按Ｚ打开)|         \n";
+					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+					cout<<endl;
 					scta(pointer == 2 ? 0x6 : 0xF);
-					cout << "* 保存\n";
+					cout << "                      ______________________________         \n";
+					cout << "                      |           保  存           |         \n";
+					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+					cout<<endl;
 					scta(pointer == 3 ? 0x6 : 0xF);
-					cout << "* 孔子不玩了，老子也不玩了\n";
+					cout << "                      ______________________________         \n";
+					cout << "                      |           退  出           |         \n";
+					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+					cout<<endl;
+					scta(pointer == 4 ? 0x6 : 0xF);
+					cout << "                      ______________________________         \n";
+					cout << "                      |       保 存 并 退 出       |         \n";
+					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+					cout<<endl;
 					scta(0xF);
-					cout << "*使用↑↓选择，Enter以确定";
-					detect(VK_DOWN) pointer = (pointer + 5) % 4, Sleep(100);
-					detect(VK_UP) pointer = (pointer + 3) % 4, Sleep(100);
+//					cout << "*使用↑↓选择，Enter以确定";
+					detect(VK_DOWN) pointer = (pointer + 6) % 5, Sleep(100);
+					detect(VK_UP) pointer = (pointer + 4) % 5, Sleep(100);
 					detect(VK_RETURN) {
 						if (pointer == 0) {
 							break;
@@ -1985,6 +2012,10 @@ extern "C++"{//游戏
 							savetheworld();
 						}
 						if (pointer == 3) {
+							exit(0);
+						}
+						if (pointer == 4) {
+							savetheworld();
 							exit(0);
 						}
 					}
@@ -2101,23 +2132,123 @@ int main() {//菜单
 	versioninit();
 	system("title JCerGame");
 	system("color 0F");
+	system("mode con lines=25 cols=75");
 	int pointer = 0;
+	for(int i=1;i<=7;i++){
+		if(i==1) scta(0x0);
+		if(i==2) scta(0x8);
+		if(i==3) scta(0x7);
+		if(i==4) scta(0xf);
+		if(i==5) scta(0x7);
+		if(i==6) scta(0x8);
+		if(i==7) scta(0x0);
+		cout<<endl<<endl<<endl;
+		cout<<"                                    ┏━┓\n";
+		cout<<"                                    ┣━┫\n";
+		cout<<"                                    ┃  ┃\n";
+		cout<<"                           ┏━━┏━┓┏┳┓┏━━\n";
+		cout<<"                           ┃  ┓┣━┫┃┃┃┣━━\n";
+		cout<<"                           ┗━┛┃  ┃┃┃┃┗━━\n";
+		cout<<"            ┏━┓┏━┓┏━━┏━━┏━━┏┓┃━┳━┏━━┏┓  \n";
+		cout<<"            ┣━┛┣┳┛┣━━┗━┓┣━━┃┃┃  ┃  ┣━━┃┗┓\n";
+		cout<<"            ┃    ┃┗━┗━━━━┛┗━━┃┗┛  ┃  ┗━━┗━┛\n";
+		cout<<"                                 ┏┓  ┃  ┃\n";
+		cout<<"                                 ┣┻┓┗┳┛\n";
+		cout<<"                                 ┗━┛  ┃\n";
+		cout<<"            ┃    ━┳━┃  ┃┏━┓┏━┓┏━┓━┳━┏━┓┏┓┃\n";
+		cout<<"            ┃      ┃  ┣━┫┣━┫┃  ┃┃━╋  ┃  ┣━┫┃┃┃\n";
+		cout<<"            ┗━━━┻━┃  ┃┃  ┃┗━┛┗━┛━┻━┃  ┃┃┗┛\n";
+		cout<<"                 ┏┓      ┏━┓━┳━┃  ┃┏━━┏━┓┏━━\n";
+		cout<<"               ┏╋┛      ┃  ┃  ┃  ┣━┫┣━━┣┳┛┗━┓\n";
+		cout<<"               ┗╋━      ┗━┛  ┃  ┃  ┃┗━━┃┗━━━┛\n";
+		if(i==4) Sleep(1500);
+		Sleep(50);
+		setpos(0,0);
+	}
+	Sleep(200);
+	for(int i=1;i<=7;i++){
+		if(i==1) scta(0x0);
+		if(i==2) scta(0x8);
+		if(i==3) scta(0x7);
+		if(i==4) scta(0xf);
+		if(i==5) scta(0x7);
+		if(i==6) scta(0x8);
+		if(i==7) scta(0x0);
+		cout<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl<<endl;
+		cout<<"                                 ┏━━━━┓\n";
+		cout<<"                                 ┣━┓    ┃\n";
+		cout<<"                                 ┗━┛    ┃\n";
+		if(i==4) Sleep(1000);
+		Sleep(50);
+		setpos(0,0);
+	}
+	Sleep(200);
+	for(int i=1;i<=4;i++){
+		if(i==1) scta(0x0);
+		if(i==2) scta(0x8);
+		if(i==3) scta(0x7);
+		if(i==4) scta(0xf);
+		cout << "             ━┳━┏━━┏━━┏━┓┏━━┏━┓┏┳┓┏━━\n";
+		cout << "               ┃  ┃    ┣━━┣┳┛┃  ┓┣━┫┃┃┃┣━━\n";
+		cout << "             ━┛  ┗━━┗━━┃┗━┗━┛┃  ┃┃┃┃┗━━\n";
+		cout<<endl;
+		cout << "                      ______________________________         \n";
+		cout << "                      |       开 始 新 游 戏       |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		cout << "                      ______________________________         \n";
+		cout << "                      |          翻 存 档          |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		cout << "                      ______________________________         \n";
+		cout << "                      |        更 新  日 志        |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		cout << "                      ______________________________         \n";
+		cout << "                      |        版 权  声 明        |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		cout << "                      ______________________________         \n";
+		cout << "                      |           退  出           |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		Sleep(50);
+		setpos(0,0);
+	}
 	while (1) {
 		setpos(0, 0);
 		scta(0xF);
-		cout << "JCerGame 一周年快乐!\n";
+		cout << "             ━┳━┏━━┏━━┏━┓┏━━┏━┓┏┳┓┏━━\n";
+		cout << "               ┃  ┃    ┣━━┣┳┛┃  ┓┣━┫┃┃┃┣━━\n";
+		cout << "             ━┛  ┗━━┗━━┃┗━┗━┛┃  ┃┃┃┃┗━━\n";
+		cout<<endl;
 		scta(pointer == 0 ? 0x6 : 0xF);
-		cout << "* 开始新游戏\n";
+		cout << "                      ______________________________         \n";
+		cout << "                      |       开 始 新 游 戏       |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
 		scta(pointer == 1 ? 0x6 : 0xF);
-		cout << "* 翻存档\n";
+		cout << "                      ______________________________         \n";
+		cout << "                      |          翻 存 档          |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
 		scta(pointer == 2 ? 0x6 : 0xF);
-		cout << "* 更新日志\n";
+		cout << "                      ______________________________         \n";
+		cout << "                      |        更 新  日 志        |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
 		scta(pointer == 3 ? 0x6 : 0xF);
-		cout << "* 版权声明\n";
+		cout << "                      ______________________________         \n";
+		cout << "                      |        版 权  声 明        |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
 		scta(pointer == 4 ? 0x6 : 0xF);
-		cout << "* 我不玩（怎么会呢）\n";
+		cout << "                      ______________________________         \n";
+		cout << "                      |           退  出           |         \n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
 		scta(0xF);
-		cout << "*使用↑↓选择，Enter以确定";
+//		cout << "*使用↑↓选择，Enter以确定";
 		detect(VK_DOWN) pointer = (pointer + 6) % 5, Sleep(100);
 		detect(VK_UP) pointer = (pointer + 4) % 5, Sleep(100);
 		detect(VK_RETURN) {
@@ -2140,7 +2271,7 @@ int main() {//菜单
 				banquan();
 			}
 			if (pointer == 4) {
-				MessageBox(NULL,"你这个怪兽！！！","Not JCerGame by lihaoqian & LiJunyi",MB_OK|MB_ICONWARNING);
+//				MessageBox(NULL,"你这个怪兽！！！","Not JCerGame by lihaoqian & LiJunyi",MB_OK|MB_ICONWARNING);
 				return 0;
 			}
 		}
