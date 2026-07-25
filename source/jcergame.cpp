@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 8
-#define snpsot 1
+#define snpsot 2
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -23,6 +23,9 @@ extern "C++"{//其他预处理
 // For faster,we will do optimize.
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
+#if __cplusplus < 201103L
+#error 主菜单->工具[T]->编译选项[C]->代码生成/优化->代码生成->语言标准(-std)->ISO C++11
+#endif
 #define press(VK_NONAME) ((GetAsyncKeyState(VK_NONAME) & 0x8000) ? 1 : 0)
 #define lborder 100
 #define uborder 100
@@ -111,14 +114,27 @@ extern "C++"{//更新日志
 		versions[0][0][8][0].addintro("更新了暂停菜单。");
 		versions[0][0][8][0].addintro("添加了入场动画。");
 		versions[0][0][8][0].addintro("使游戏更没有一周年氛围。");
-		versions[0][0][8][1].init(26,67,67,"图文声象更新 Pt.“文”");
-		versions[0][0][8][1].addintro("修复了Bug。");//9
-		versions[0][0][8][1].addintro("修复了存取存档无法正常使用的Bug。");//0
-		versions[0][0][8][1].addintro("更新了简介（原版权声明）。");//9
-		versions[0][0][8][1].addintro("新功能：设置。");//0
-		versions[0][0][8][1].addintro("新功能：存档列表。");//0
-		versions[0][0][8][1].addintro("更改了菜单（和暂停菜单）的内容。");//5
+		versions[0][0][8][1].init(26,7,16,"图文声象更新 Pt.“文”");
+		versions[0][0][8][1].addintro("修复了Bug。");
+		versions[0][0][8][1].addintro("修复了存取存档无法正常使用的Bug。");
+		versions[0][0][8][1].addintro("加入了C11的兼容性修复。");
+		versions[0][0][8][1].addintro("更新了简介（原版权声明）。");
+		versions[0][0][8][1].addintro("新功能：设置。");
+		versions[0][0][8][1].addintro("新功能：存档列表。");
+		versions[0][0][8][1].addintro("更改了菜单（和暂停菜单）的内容。");
 		versions[0][0][8][1].addintro("真够累人的，不是吗？（我甚至想把这次更新分成两个部分）");
+		versions[0][0][8][2].init(26,7,18,"神谕更新");
+		versions[0][0][8][2].addintro("修复了Bug。");
+		versions[0][0][8][2].addintro("新功能：成就。");
+//		versions[0][0][8][2].init(26,67,67,"图文声象更新 Pt.“声”");
+//		versions[0][0][8][2].addintro("修复了Bug。");
+//		versions[0][0][8][2].addintro("加入了调音界面。");
+//		versions[0][0][8][2].addintro("加入了五首音乐：");
+//		versions[0][0][8][2].addintro("Batty McFaddin - Kevin MacLeod");
+//		versions[0][0][8][2].addintro("Doh De Doh - Kevin MacLeod");
+//		versions[0][0][8][2].addintro("Thatched Villagers - Kevin MacLeod");
+//		versions[0][0][8][2].addintro("The Builders - Kevin MacLeod");
+//		versions[0][0][8][2].addintro("A Very Brady Special - Kevin MacLeod");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -296,6 +312,58 @@ extern "C++"{//设置预处理
 	bool samsara=0;
 	bool clsanimation=1;
 }
+extern "C++"{//成就预处理
+	map<string,string> achname;
+	map<string,string> achintro;
+	map<string,bool> achieved;
+	vector<string> achievements;
+	int achicnt=0;
+	int justfinished;
+	void achinit(){
+		achname               ["studyToWalk"]="蹒跚学步";
+		achintro              ["studyToWalk"]="使用WASD或方向键移动";
+		achievements.push_back("studyToWalk");
+		achname               ["checkout"]="检查装备";
+		achintro              ["checkout"]="按下R进入物品系统";
+		achievements.push_back("checkout");
+		achname               ["deepSeek"]="深度求索";
+		achintro              ["deepSeek"]="在灌木丛'w'上按下P，获得酸果或树枝";
+		achievements.push_back("deepSeek");
+		achname               ["emeraldLike"]="打水漂时间";
+		achintro              ["emeraldLike"]="在小石头'o'上按下P，获得小石子";
+		achievements.push_back("emeraldLike");
+		achname               ["handwork"]="手工业";
+		achintro              ["handwork"]="将树枝和小石子放入合成栏，并合成出石斧";
+		achievements.push_back("handwork");
+		achname               ["informationTechnology"]="信息科技";
+		achintro              ["informationTechnology"]="按下Z或Esc，进入喂鸡百科";
+		achievements.push_back("informationTechnology");
+		achname               ["deletion"]="斯大林的名单";
+		achintro              ["deletion"]="把石斧放在手上，靠近一只生物并杀死";
+		achievements.push_back("deletion");
+		achname               ["cooking"]="状态火热";
+		achintro              ["cooking"]="使用三个小石子合成石炉，并按下E放下";
+		achievements.push_back("cooking");
+		achname               ["wellDone"]="美拉德反应";
+		achintro              ["wellDone"]="烹饪生牛肉并拿在手上，按下E食用";
+		achievements.push_back("wellDone");
+		achname               ["theHomeDepot"]="家得宝";
+		achintro              ["theHomeDepot"]="使用横木(和树枝)合成木板或木块";
+		achievements.push_back("theHomeDepot");
+		achname               ["waitingForUpdate"]="等待更新";
+		achintro              ["waitingForUpdate"]="当然，一时半会儿更新不了";
+		achievements.push_back("waitingForUpdate");
+		achname               ["JCerGame"]="JCerGame";
+		achintro              ["JCerGame"]="你被JC了";
+		achievements.push_back("JCerGame");
+	}
+	void achieve(string s){
+		if(s==achievements[achicnt]&&!achieved[s]){
+			achieved[s]=1;
+			justfinished=30;
+		}
+	}
+}
 extern "C++"{//有用？的函数
 	int main();
 	int ti(float a) { return ((int)(a * 10 + 5)) / 10; }
@@ -373,6 +441,7 @@ extern "C++"{//有用？的函数
 		cout << "                   ︶ \n";
 		cout << "此外，使用由该游戏源代码特定函数的，应当在源码中标注。\n";
 		cout << "感谢wangbohan,wangzhenglong等人的随机数种子及生物战斗的灵感。\n";
+		cout << "Email:lihaoqian12@outlook.com Luogu:veryCoolUsername Acwing:滚木\n";
 		cout << "按 ESC 退出。";
 		while (true) {
 			detect(VK_ESCAPE) {
@@ -393,8 +462,8 @@ extern "C++"{//有用？的函数
 		while (1) {
 			detect('Q') { 
 				if(samsara){
-					main();
-				}else exit(0);
+					system("start jcergame.exe");
+				}exit(0);
 			}
 			Sleep(10);
 		}
@@ -450,6 +519,7 @@ extern "C++"{//结构体
 }
 extern "C++"{//变量
 	string message;
+	string archiveslot,archivename;
 	map<char, int> color;
 	map<int, string> itemname;
 	map<int, int> itemsize;
@@ -496,10 +566,14 @@ extern "C++"{//物品系统
 		void rid(){
 			in>>item>>qutt;
 		}
+		slot(int a=0,int b=0){
+			item=a;
+			qutt=b;
+		}
 	}tpltslt,tempslt,tempslot;
 	struct vult{
 		vector<slot> slots;
-		string name="67";
+		string name="口袋";
 		int weight(){
 			int totwt=0;
 			for(slot sl:slots){
@@ -596,7 +670,7 @@ extern "C++"{//物品系统
 		for(int i=0;i<10;i++) hcl[i]=tpltslt;
 		while(1){
 			setpos(0,0);
-			cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
+			cout<<"上一个容器[←] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[→]            \n";
 			for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
 				if(_1==char(i+'1')) scta(6);else scta(15);
 				cout<<"第"<<i+1<<"个物品槽:             "<<
@@ -688,6 +762,15 @@ extern "C++"{//物品系统
 			
 			if(_1=='?') cout<<"按Q退出,按W合成,或按下按键执行操作                 \n                                     ";
 			else        cout<<"按E丢掉,按R撤回,或按下另一个按键执行交换、堆叠操作,\n同时按下Tab分割一半,按下Shift分割一个";
+			
+			detect(VK_LEFT){
+				vps=(vps-1+inventory.vaults.size())%inventory.vaults.size();
+				Sleep(100);
+			}
+			detect(VK_RIGHT){
+				vps=(vps+1)%inventory.vaults.size();
+				Sleep(100);
+			}
 			
 			if(_1!='?'&&_2!='?'){
 				//first, _1->tempslt
@@ -980,6 +1063,7 @@ extern "C++"{//物品系统
 					inventory.hand.item=tempslt.item;
 					inventory.hand.qutt=tempslt.qutt;
 				}
+				inventory.refresh();
 				while(press(_2));
 				_1='?';
 				_2='?';
@@ -1008,6 +1092,7 @@ extern "C++"{//物品系统
 				goto testforhecheng;
 			}
 			
+			inventory.refresh();
 			if(0){
 				testforhecheng:;
 				inventory.refresh();
@@ -1053,6 +1138,8 @@ extern "C++"{//物品系统
 					}
 					if(inventory.cp.item==0) inventory.cp=cp;
 					else inventory.cp.qutt+=cp.qutt;
+					if(cp.item==5) achieve("handwork");
+					if(cp.item==6||cp.item==7) achieve("theHomeDepot");
 					while(press('W'));
 					goto testforhecheng;
 				}
@@ -1061,14 +1148,6 @@ extern "C++"{//物品系统
 			
 			detect('Q'){
 				break;
-			}
-			detect(','){
-				vps=(vps-1+vps)%inventory.vaults.size();
-				Sleep(100);
-			}
-			detect('.'){
-				vps=(vps+1)%inventory.vaults.size();
-				Sleep(100);
 			}
 		}
 	}
@@ -1097,6 +1176,7 @@ extern "C++"{//游戏内使用函数
 		anicls();
 		system("cls");
 		setpos(0, 0);
+		achieve("informationTechnology");
 		cout << "                    \n";
 		cout << "      喂鸡百科      \n";
 		cout << "                    \n";
@@ -1253,27 +1333,29 @@ extern "C++"{//游戏内使用函数
 							anicls();
 							return;
 						}
-					} else if (pntx == 4 && pnty == 4) {
-						cout << "1:指向背包的第1个物品";
-					} else if (pntx == 7 && pnty == 4) {
-						cout << "2:指向背包的第2个物品";
-					} else if (pntx == 10 && pnty == 4) {
-						cout << "3:指向背包的第3个物品";
-					} else if (pntx == 13 && pnty == 4) {
-						cout << "4:指向背包的第4个物品";
-					} else if (pntx == 16 && pnty == 4) {
-						cout << "5:指向背包的第5个物品";
-					} else if (pntx == 19 && pnty == 4) {
-						cout << "6:指向背包的第6个物品";
-					} else if (pntx == 22 && pnty == 4) {
-						cout << "7:指向背包的第7个物品";
-					} else if (pntx == 25 && pnty == 4) {
-						cout << "8:指向背包的第8个物品";
-					} else if (pntx == 28 && pnty == 4) {
-						cout << "9:指向背包的第9个物品";
-					} else if (pntx == 31 && pnty == 4) {
-						cout << "0:指向背包的第10个物品";
-					} else if (pntx == 1 && pnty == 1) {
+					} 
+//					else if (pntx == 4 && pnty == 4) {
+//						cout << "1:指向背包的第1个物品";
+//					} else if (pntx == 7 && pnty == 4) {
+//						cout << "2:指向背包的第2个物品";
+//					} else if (pntx == 10 && pnty == 4) {
+//						cout << "3:指向背包的第3个物品";
+//					} else if (pntx == 13 && pnty == 4) {
+//						cout << "4:指向背包的第4个物品";
+//					} else if (pntx == 16 && pnty == 4) {
+//						cout << "5:指向背包的第5个物品";
+//					} else if (pntx == 19 && pnty == 4) {
+//						cout << "6:指向背包的第6个物品";
+//					} else if (pntx == 22 && pnty == 4) {
+//						cout << "7:指向背包的第7个物品";
+//					} else if (pntx == 25 && pnty == 4) {
+//						cout << "8:指向背包的第8个物品";
+//					} else if (pntx == 28 && pnty == 4) {
+//						cout << "9:指向背包的第9个物品";
+//					} else if (pntx == 31 && pnty == 4) {
+//						cout << "0:指向背包的第10个物品";
+//					} 
+					else if (pntx == 1 && pnty == 1) {
 						cout << "Escape:打开菜单";
 					}
 					
@@ -1294,7 +1376,7 @@ extern "C++"{//游戏内使用函数
 					scta(7);
 					cout<<"按ESC退出\n";
 					scta(15);
-					cout<<"上一个容器[,] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[.]            \n";
+					cout<<"上一个容器[←] 目前"<<vps+1<<"号容器-"<<inventory.vaults[vps].name<<" 下一个容器[→]            \n";
 					for(unsigned i=0;i<inventory.vaults[vps].slots.size();i++){
 						if(_1==char(i+'1')) scta(6);else scta(15);
 						cout<<"第"<<i+1<<"个物品槽:             "<<
@@ -1333,6 +1415,15 @@ extern "C++"{//游戏内使用函数
 						sysclr=1;
 					}
 					scta(15);
+					
+					detect(VK_LEFT){
+						vps=(vps-1+inventory.vaults.size())%inventory.vaults.size();
+						Sleep(100);
+					}
+					detect(VK_RIGHT){
+						vps=(vps+1)%inventory.vaults.size();
+						Sleep(100);
+					}
 					
 					if(_1=='?'){
 						cout<<"按下按键查看物品信息\n\n\n\n\n\n\n\n";
@@ -1464,6 +1555,7 @@ extern "C++"{//游戏内使用函数
 		anicls();
 	}
 	void whenmove() {
+		achieve("studyToWalk");
 		force--;
 		Sleep(speed);
 	}
@@ -1502,6 +1594,7 @@ extern "C++"{//游戏内使用函数
 		cout<<"4 @ 6\n";
 		cout<<"1 2 3\n";
 		cout<<"0(取消)";
+		if(c=='O') achieve("cooking");
 		while(1){
 			detects(VK_NUMPAD0,'0'){
 				takeanitem(returns);
@@ -1543,6 +1636,7 @@ extern "C++"{//游戏内使用函数
 	}
 	void battle(int tx,int ty){//x!=x y!=y x=y y=x
 		anicls();
+		achieve("deletion");
 		while(entty[tx][ty].hp>0){
 			cout<<"你遭遇了 "<<enttname[entty[tx][ty].type]<<" ！！\n\n("<<hp<<")";
 			scta(0xf6);
@@ -1606,7 +1700,7 @@ extern "C++"{//游戏内使用函数
 	}
 }
 extern "C++"{//游戏
- 	void inittheworld(bool reset=1) {
+	void inittheworld(bool reset=1) {
 		printf("定义颜色\n");  //当成注释就行别删
 		color['.'] = 0xA0;     // grass
 		color[','] = 0x60;     // dirt
@@ -1623,10 +1717,10 @@ extern "C++"{//游戏
 		printf("临摹生物\n");
 		eco['V']=0xe6;
 		enttname['V']="牛";
-		eds['V'].init(8,1,3,0,0,0,0,0,0);
+		eds['V'].init( 8, 1, 3,12, 0, 2, 0, 0, 0);
 		eco['Q']=0xe8;
 		enttname['Q']="猫";
-		eds['Q'].init(9,2,5,0,0,0,0,0,0);
+		eds['Q'].init( 9, 2, 5, 0, 0, 0, 0, 0, 0);
 		printf("安装导航\n");
 		bad['=']=1;
 		bad['_']=1;
@@ -1649,7 +1743,7 @@ extern "C++"{//游戏
 		itemsize[7] = 1;
 		itemname[8] = "生牛肉";
 		itemsize[8] = 1;
-	  burnresult[8] = 10;
+		burnresult[8] = 10;
 		itemname[9] = "毛线";
 		itemsize[9] = 1;
 		itemname[10]= "熟牛肉";
@@ -1685,14 +1779,12 @@ extern "C++"{//游戏
 			posx = 500;
 			posy = 500;
 			hp=50;
+			force=500;
 		}
-		inventory.rfwt();
 		alive = 1;
 		speed = 1;
-		force = 500;
-		//    posx = 0;
-		//    posy = 0;
 		showed = false;
+		inventory.rfwt();
 		if(!reset) goto heyhello;
 		printf("初始化地图\n");
 		for (int i = 0; i < 1000; i++) {
@@ -1829,18 +1921,21 @@ extern "C++"{//游戏
 //	inventory.vaults[0].slots[2].item=3;
 //	inventory.vaults[0].slots[2].qutt=30;
 		
-//		inventory.vaults[0].slots[0].item=1;
+//		inventory.vaults[0].slots[0].item=9;
 //		inventory.vaults[0].slots[0].qutt=6767;
+//		inventory.vaults[0].slots[1].item=12;
+//		inventory.vaults[0].slots[1].qutt=6767;
 		system("cls");
 	}
 	void savetheworld(){
 		anicls();
 		setpos(0,0);
-		cout<<"为您的存档命名:";
-		string name;
-		cin>>name;
+//		cout<<"为您的存档命名:";
+//		string name;
+//		cin>>name;
 		cout<<"正在保存";
-		out.open((name+".jc6").c_str());
+		out.open((archiveslot+".jc8").c_str());
+		out<<archivename<<endl;
 		for(int i=uborder;i<=dborder;i++){
 			for(int j=lborder;j<=rborder;j++){
 				out<<world[i][j];
@@ -1856,13 +1951,11 @@ extern "C++"{//游戏
 		setpos(0,0);
 	}
 	void loadtheworld(){
-		anicls();
-		setpos(0,0);
-		cout<<"拖入存档(.jc6)文件:";
 		string name;
-		cin>>name;
 		cout<<"正在导入";
-		in.open(name.c_str());
+		in.open((archiveslot+".jc8").c_str());
+		in>>name;
+		archivename=name;
 		for(int i=uborder;i<=dborder;i++){
 			for(int j=lborder;j<=rborder;j++){
 				in>>world[i][j];
@@ -1879,6 +1972,7 @@ extern "C++"{//游戏
 	}
 	void The_World() {
 		weijiinit();
+		achinit();
 		while (alive) {
 			setpos(0, 0);
 			scta(0x85);
@@ -1896,7 +1990,16 @@ extern "C++"{//游戏
 				cout << "                                 "
 				<< "\n";
 			}
+			scta(0x8e);
+			if(!justfinished){
+				cout<<"<成就> "<<achname[achievements[achicnt]]<<":"<<achintro[achievements[achicnt]];
+			}else{
+				cout<<"<成就> "<<achname[achievements[achicnt]]<<" 达成！！";
+				justfinished--;
+				if(!justfinished) achicnt++;
+			}
 			scta(0xF);
+			cout<<"               \n";
 			for (int i = posy - 10; i <= posy + 10; i++) {
 				for (int j = posx - 25; j <= posx + 25; j++) {
 					if (i == posy && j == posx) {
@@ -1919,7 +2022,7 @@ extern "C++"{//游戏
 			}
 			scta(0xF);
 			cout<<"                             ";
-			cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"            \n";
+			cout<<"\n手持物品："<<itemname[inventory.hand.item]<<"x"<<inventory.hand.qutt<<"            ";
 			vision = 0x0;
 			bool moved=0;
 			if(move()){
@@ -1937,6 +2040,7 @@ extern "C++"{//游戏
 			}
 			
 			detect('R'){//item system
+				achieve("checkout");
 				itemsystem();
 			}
 			
@@ -2022,6 +2126,7 @@ extern "C++"{//游戏
 						force+=50;
 					}
 					if(inventory.hand.item==10){
+						achieve("wellDone");
 						inventory.hand.qutt--;
 						inventory.refresh();
 						message="血量+10,体力+200";
@@ -2060,12 +2165,12 @@ extern "C++"{//游戏
 					cout<<endl;
 					scta(pointer == 2 ? 0x6 : 0xF);
 					cout << "                      ______________________________         \n";
-					cout << "                      |           保  存           |         \n";
+					cout << "                      |           滚  木           |         \n";
 					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 					cout<<endl;
 					scta(pointer == 3 ? 0x6 : 0xF);
 					cout << "                      ______________________________         \n";
-					cout << "                      |           退  出           |         \n";
+					cout << "                      |           设  置           |         \n";
 					cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
 					cout<<endl;
 					scta(pointer == 4 ? 0x6 : 0xF);
@@ -2087,10 +2192,10 @@ extern "C++"{//游戏
 							anicls();
 						}
 						if (pointer == 2) {
-							savetheworld();
+							MessageBox(0,"I AK IOI","JCerMessage",MB_ICONEXCLAMATION|MB_OK);
 						}
 						if (pointer == 3) {
-							exit(0);
+							settings();
 						}
 						if (pointer == 4) {
 							savetheworld();
@@ -2103,7 +2208,7 @@ extern "C++"{//游戏
 				detect('P') {
 					int progress = 0;
 					anicls();
-					while (progress < 10) {
+					while (progress < 30) {
 						scta(0xF);
 						setpos(0, 0);
 						printf("按下P砍树\n");
@@ -2124,10 +2229,10 @@ extern "C++"{//游戏
 						scta(0x6);
 						printf(" ||| \n");
 						scta(0xF);
-						printf("进度:%d/10 体力:%d 一次伤害%d\n", progress, force, damage);
+						printf("进度:%d/30 体力:%d 一次伤害%d\n", progress, force, damage);
 						detect('P') {
 							srand(rand());
-							if (rand() % 3 == 1) {
+							if (rand() % 3 == 2) {
 								printf("没砍到");
 							} else {
 								printf("砍到了");
@@ -2147,12 +2252,14 @@ extern "C++"{//游戏
 			}
 			if (world[posy][posx] == 'o') {
 				detect('P') {
+					achieve("emeraldLike");
 					takeanitem(1);
 					world[posy][posx] = ',';
 				}
 			}
 			if (world[posy][posx] == 'w') {
 				detect('P') {
+					achieve("deepSeek");
 					srand(rand());
 					takeanitem(rand() % 2 + 3);
 					world[posy][posx] = '.';
@@ -2353,6 +2460,67 @@ int main() {//菜单
 	}
 	anicls();
 	setpos(0, 0);
+	string archives[67];
+	ifstream jc;
+	jc.open("1.jc8"); if(jc.fail()) archives[1]="空"; else jc>>archives[1]; jc.close();
+	jc.open("2.jc8"); if(jc.fail()) archives[2]="空"; else jc>>archives[2]; jc.close();
+	jc.open("3.jc8"); if(jc.fail()) archives[3]="空"; else jc>>archives[3]; jc.close();
+	jc.open("4.jc8"); if(jc.fail()) archives[4]="空"; else jc>>archives[4]; jc.close();
+	jc.open("5.jc8"); if(jc.fail()) archives[5]="空"; else jc>>archives[5]; jc.close();
+	while (1) {
+		setpos(0, 0);
+		scta(0xF);
+		cout << "             ━┳━┏━━┏━━┏━┓┏━━┏━┓┏┳┓┏━━\n";
+		cout << "               ┃  ┃    ┣━━┣┳┛┃  ┓┣━┫┃┃┃┣━━\n";
+		cout << "             ━┛  ┗━━┗━━┃┗━┗━┛┃  ┃┃┃┃┗━━\n";
+		cout<<  "                                 选择存档\n";
+		scta(pointer == 0 ? 0x6 : 0xF);
+		cout << "                      ______________________________         \n";
+		cout << "                      |"<<archives[1];for(unsigned i=28;i>archives[1].size();i--)cout<<" ";cout<<"|\n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		scta(pointer == 1 ? 0x6 : 0xF);
+		cout << "                      ______________________________         \n";
+		cout << "                      |"<<archives[2];for(unsigned i=28;i>archives[2].size();i--)cout<<" ";cout<<"|\n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		scta(pointer == 2 ? 0x6 : 0xF);
+		cout << "                      ______________________________         \n";
+		cout << "                      |"<<archives[3];for(unsigned i=28;i>archives[3].size();i--)cout<<" ";cout<<"|\n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		scta(pointer == 3 ? 0x6 : 0xF);
+		cout << "                      ______________________________         \n";
+		cout << "                      |"<<archives[4];for(unsigned i=28;i>archives[4].size();i--)cout<<" ";cout<<"|\n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		scta(pointer == 4 ? 0x6 : 0xF);
+		cout << "                      ______________________________         \n";
+		cout << "                      |"<<archives[5];for(unsigned i=28;i>archives[5].size();i--)cout<<" ";cout<<"|\n";
+		cout << "                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         \n";
+		cout<<endl;
+		scta(0xF);
+//		cout << "*使用↑↓选择，Enter以确定";
+		detect(VK_DOWN) pointer = (pointer + 6) % 5, Sleep(100);
+		detect(VK_UP) pointer = (pointer + 4) % 5, Sleep(100);
+		detect(VK_RETURN) {
+			pointer++;
+			archiveslot=to_string(pointer);
+			if(archives[pointer]=="空") break;
+			else{
+				anicls();
+				setpos(0, 0);
+				loadtheworld();
+				inittheworld(0);
+				The_World();
+				return 0;
+			}
+		}
+	}
+	anicls();
+	setpos(0, 0);
+	cout<<"为存档命名：";
+	cin>>archivename;
 	inittheworld();
 	The_World();
 	return 0;
