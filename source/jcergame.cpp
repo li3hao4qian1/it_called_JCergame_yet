@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 8
-#define snpsot 2
+#define snpsot 3
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -126,6 +126,10 @@ extern "C++"{//更新日志
 		versions[0][0][8][2].init(26,7,18,"神谕更新");
 		versions[0][0][8][2].addintro("修复了Bug。");
 		versions[0][0][8][2].addintro("新功能：成就。");
+		versions[0][0][8][3].init(26,7,23,"");
+		versions[0][0][8][3].addintro("修复了Bug。");
+		versions[0][0][8][3].addintro("加入了皮革、口袋。");
+		versions[0][0][8][3].addintro("更改了存档的格式。");
 //		versions[0][0][8][2].init(26,67,67,"图文声象更新 Pt.“声”");
 //		versions[0][0][8][2].addintro("修复了Bug。");
 //		versions[0][0][8][2].addintro("加入了调音界面。");
@@ -298,7 +302,13 @@ extern "C++"{//喂鸡百科预处理
 		WIintro[11]="And he sacrificed...";
 		WIusage[11]="放置石炉";
 		WIsourc[11]="合成获得";
-		WIcount=11;
+		WIintro[12]="牛皮";
+		WIusage[12]="合成物品";
+		WIsourc[12]="杀死牛获得";
+		WIintro[13]="大僵 Pocket 3";
+		WIusage[13]="增加背包物品槽";
+		WIsourc[13]="合成获得";
+		WIcount=13;
 		WMname['V'] = "牛";
 		WMintro['V'] = "字符画的牛太大，这里放不下，所以没有介绍，";
 		WMlist.push_back('V');
@@ -350,6 +360,9 @@ extern "C++"{//成就预处理
 		achname               ["theHomeDepot"]="家得宝";
 		achintro              ["theHomeDepot"]="使用横木(和树枝)合成木板或木块";
 		achievements.push_back("theHomeDepot");
+		achname               ["pocketVersion"]="口袋版";
+		achintro              ["pocketVersion"]="使用皮革和毛线合成口袋并按E装备";
+		achievements.push_back("pocketVersion");
 		achname               ["waitingForUpdate"]="等待更新";
 		achintro              ["waitingForUpdate"]="当然，一时半会儿更新不了";
 		achievements.push_back("waitingForUpdate");
@@ -1700,7 +1713,7 @@ extern "C++"{//游戏内使用函数
 	}
 }
 extern "C++"{//游戏
-	void inittheworld(bool reset=1) {
+ 	void inittheworld(bool reset=1) {
 		printf("定义颜色\n");  //当成注释就行别删
 		color['.'] = 0xA0;     // grass
 		color[','] = 0x60;     // dirt
@@ -1743,13 +1756,17 @@ extern "C++"{//游戏
 		itemsize[7] = 1;
 		itemname[8] = "生牛肉";
 		itemsize[8] = 1;
-		burnresult[8] = 10;
+	  burnresult[8] = 10;
 		itemname[9] = "毛线";
 		itemsize[9] = 1;
 		itemname[10]= "熟牛肉";
 		itemsize[10]= 1;
 		itemname[11]= "石炉";
 		itemsize[11]= 1;
+		itemname[12]= "皮革";
+		itemsize[12]= 1;
+		itemname[13]= "口袋";
+		itemsize[13]= 1;
 		printf("进行神秘操作\n");
 		intable['T'] = 1;
 		intable['o'] = 1;
@@ -1763,6 +1780,7 @@ extern "C++"{//游戏
 		ings.push_back(ing(1, 3, 1, 1, 2, 1, 0, 0, 0, 6, 3));
 		ings.push_back(ing(1, 2, 1, 0, 0, 0, 0, 0, 0, 7, 4));
 		ings.push_back(ing(1, 1, 3, 0, 0, 0, 0, 0, 0,11, 1));
+		ings.push_back(ing(1,12, 1, 1, 9, 1, 0, 0, 0,13, 1));
 		printf("吃石化其他变量\n");
 		if(reset){
 			inventory.vaults.clear();
@@ -1943,7 +1961,7 @@ extern "C++"{//游戏
 			if(i%20==0) cout<<'.';
 		}
 		inventory.wi();
-		out<<" "<<posx<<" "<<posy;
+		out<<" "<<posx<<" "<<posy<<" "<<hp<<" "<<force<<" "<<achicnt;
 		out.close();
 		cout<<endl<<"保存完毕。";
 		Sleep(100);
@@ -1963,7 +1981,7 @@ extern "C++"{//游戏
 			if(i%20==0) cout<<'.';
 		}
 		inventory.ri();
-		in>>posx>>posy;
+		in>>posx>>posy>>hp>>force>>achicnt;
 		in.close();
 		cout<<endl<<"加载完毕。";
 		Sleep(100);
@@ -2138,6 +2156,18 @@ extern "C++"{//游戏
 						inventory.hand.qutt--;
 						inventory.refresh();
 						build('O',11);
+					}
+					if(inventory.hand.item==13){
+						achieve("pocketVersion");
+						inventory.hand.qutt--;
+						tempvlt=tpltvlt;
+						tempvlt.slots.push_back(tpltslt);
+						tempvlt.slots.push_back(tpltslt);
+						tempvlt.slots.push_back(tpltslt);
+						inventory.vaults.push_back(tempvlt);
+						message="装备口袋";
+						showed=1;
+						inventory.refresh();
 					}
 					cooldown=10;
 				}
