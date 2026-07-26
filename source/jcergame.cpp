@@ -1,13 +1,13 @@
 // Copyleft(c) lihaoqian,LiJunyi
 // 版权所有，亲全必究
 // 任何试图盗窃此代码的人会被线上/线下真实，并被JC
-// luyiming将会永远被钉在某处的耻辱柱上(by copying benghuai·dongbeitiedao)
+// luyiming将会永远被钉在某处的耻辱柱上(by copying benghuai·dongbeitiedao)	
 // 请在编译时添加命令"-std=c++11"！！！
 // extern的作用是让部分可以收起
 #define bigver 0
 #define midver 0
 #define smaver 8
-#define snpsot 3
+#define snpsot 4
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -130,15 +130,10 @@ extern "C++"{//更新日志
 		versions[0][0][8][3].addintro("修复了Bug。");
 		versions[0][0][8][3].addintro("加入了皮革、口袋。");
 		versions[0][0][8][3].addintro("更改了存档的格式。");
-//		versions[0][0][8][2].init(26,67,67,"图文声象更新 Pt.“声”");
-//		versions[0][0][8][2].addintro("修复了Bug。");
-//		versions[0][0][8][2].addintro("加入了调音界面。");
-//		versions[0][0][8][2].addintro("加入了五首音乐：");
-//		versions[0][0][8][2].addintro("Batty McFaddin - Kevin MacLeod");
-//		versions[0][0][8][2].addintro("Doh De Doh - Kevin MacLeod");
-//		versions[0][0][8][2].addintro("Thatched Villagers - Kevin MacLeod");
-//		versions[0][0][8][2].addintro("The Builders - Kevin MacLeod");
-//		versions[0][0][8][2].addintro("A Very Brady Special - Kevin MacLeod");
+		versions[0][0][8][4].init(26,7,26,"图文声象更新 Pt.“声”");
+		versions[0][0][8][4].addintro("修复了Bug。");
+		versions[0][0][8][4].addintro("新功能：扩展包。");
+		versions[0][0][8][4].addintro("新扩展包：澎湃声乐(The Music Within)。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -317,10 +312,61 @@ extern "C++"{//喂鸡百科预处理
 		WMlist.push_back('Q');
 	}
 }  // WeijiPedia
-extern "C++"{//设置预处理
+extern "C++"{//设置项、扩展包预处理
 	bool raisecolor=1;
 	bool samsara=0;
 	bool clsanimation=1;
+	bool usingthemusicwithin=0;
+	namespace themusicwithin{
+		map<string,string> musicalias;
+		string status="就绪";
+		void init(){
+			ifstream ans("themusicwithin\\manifest.inf");
+			usingthemusicwithin=ans.good();
+			if(!usingthemusicwithin){
+				status="未加载";
+				return;
+			}
+			int x,y,z,a;
+			ans>>x>>y>>z>>a;
+			int ext=x*270000+y*9000+z*300+a;
+			int thiss=bigver*270000+midver*9000+smaver*300+snpsot;
+			if(ext<thiss){
+				status="不可用";
+				usingthemusicwithin=0;
+				return;
+			}
+			if(ext>thiss){
+				status="基本就绪";
+			}
+			musicalias["battymcfaddin"]="themusicwithin\\01bf52.wav";
+			musicalias["dohdeoh"      ]="themusicwithin\\1d4b42.wav";
+			musicalias["nothing"      ]="themusicwithin\\df7dbf.wav";
+			musicalias["royalbanana"  ]="themusicwithin\\7868ba.wav";
+		}
+#define PLAYMODE_PLAY 0
+#define PLAYMODE_STOP 1
+#define PLAYMODE_DETECT 2
+#define PLAYMODE_LOOP 3
+		bool play(int mode,string alias="67"){
+			if(!usingthemusicwithin) return 1;
+			if(mode==0){
+				return !PlaySound(musicalias[alias].c_str(),0,SND_ASYNC);
+			}
+			if(mode==1){
+				return !PlaySound(0,0,SND_PURGE);
+			}
+			if(mode==2){
+				bool ans=PlaySound(0,0,SND_ASYNC|SND_NOSTOP);
+				if(ans) PlaySound(0,0,SND_PURGE);
+				return ans;
+			}
+			if(mode==3){
+				return !PlaySound(musicalias[alias].c_str(),0,SND_ASYNC|SND_LOOP);
+			}
+			return 1;
+		}
+	}
 }
 extern "C++"{//成就预处理
 	map<string,string> achname;
@@ -1554,14 +1600,17 @@ extern "C++"{//游戏内使用函数
 			scta((pntr==2)?6:15);
 			cout<<"清屏动画------------------------------------------"<<(clsanimation?"[  [开]":"[关]  ]")<<endl;
 			scta((pntr==3)?6:15);
+			cout<<"扩展包：澎湃声乐----------------------------状态："<<themusicwithin::status<<endl;
+			scta((pntr==4)?6:15);
 			cout<<"退出设置";
-			detect(VK_UP) pntr=(pntr+3)%4,Sleep(100);
-			detect(VK_DOWN) pntr=(pntr+5)%4,Sleep(100);
+			detect(VK_UP) pntr=(pntr+4)%5,Sleep(100);
+			detect(VK_DOWN) pntr=(pntr+6)%5,Sleep(100);
 			detect(VK_RETURN){
 				if(pntr==0) raisecolor=!raisecolor;
 				if(pntr==1) samsara=!samsara;
 				if(pntr==2) clsanimation=!clsanimation;
-				if(pntr==3) break;
+				if(pntr==3) ;
+				if(pntr==4) break;
 				Sleep(100);
 			}
 		}
@@ -2053,6 +2102,12 @@ extern "C++"{//游戏
 				}
 			}
 			
+			if(themusicwithin::play(PLAYMODE_DETECT)){
+				srand(time(0));
+				if(rand()%2==0) themusicwithin::play(PLAYMODE_PLAY,"dohdeoh");
+				if(rand()%2==1) themusicwithin::play(PLAYMODE_PLAY,"royalbanana");
+			}
+			
 			detect('Z'){//weijipedia
 				weijipedia();
 			}
@@ -2345,6 +2400,7 @@ extern "C++"{//游戏
 }
 int main() {//菜单
 	versioninit();
+	themusicwithin::init();
 	system("title JCerGame");
 	system("color 0F");
 	system("mode con lines=25 cols=75");
@@ -2430,6 +2486,7 @@ int main() {//菜单
 		Sleep(50);
 		setpos(0,0);
 	}
+	themusicwithin::play(PLAYMODE_LOOP,"battymcfaddin");
 	while (1) {
 		setpos(0, 0);
 		scta(0xF);
@@ -2538,6 +2595,7 @@ int main() {//菜单
 			archiveslot=to_string(pointer);
 			if(archives[pointer]=="空") break;
 			else{
+				themusicwithin::play(PLAYMODE_STOP);
 				anicls();
 				setpos(0, 0);
 				loadtheworld();
@@ -2547,6 +2605,7 @@ int main() {//菜单
 			}
 		}
 	}
+	themusicwithin::play(PLAYMODE_STOP);
 	anicls();
 	setpos(0, 0);
 	cout<<"为存档命名：";
