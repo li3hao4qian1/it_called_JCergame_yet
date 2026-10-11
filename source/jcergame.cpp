@@ -7,7 +7,7 @@
 #define bigver 0
 #define midver 0
 #define smaver 8
-#define snpsot 4
+#define snpsot 5
 extern "C++"{//头文件
 #define _GLIBCXX_COMPLEX "Have a nice day."
 #include <bits/stdc++.h>
@@ -17,15 +17,20 @@ extern "C++"{//头文件
 #include <wincon.h>
 #include <time.h>
 #include <direct.h>
+#include <mmsystem.h>
 }
 extern "C++"{//其他预处理
 	using namespace std;
 // For faster,we will do optimize.
 #pragma GCC optimize(3)
 #pragma GCC optimize("Ofast")
-#if __cplusplus < 201103L
-#error 主菜单->工具[T]->编译选项[C]->代码生成/优化->代码生成->语言标准(-std)->ISO C++11
+#pragma comment(lib, "winmm.lib")
+#if (__cplusplus < 201103L) || !defined(PlaySound)
+#error 主菜单->工具[T]->编译选项[C]->  \
+	编译器->[勾选]编译时加入以下命令->  \
+	[输入] -std=c++11 -lwinmm
 #endif
+#pragma 
 #define press(VK_NONAME) ((GetAsyncKeyState(VK_NONAME) & 0x8000) ? 1 : 0)
 #define lborder 100
 #define uborder 100
@@ -134,6 +139,9 @@ extern "C++"{//更新日志
 		versions[0][0][8][4].addintro("修复了Bug。");
 		versions[0][0][8][4].addintro("新功能：扩展包。");
 		versions[0][0][8][4].addintro("新扩展包：澎湃声乐(The Music Within)。");
+		versions[0][0][8][5].init(26,10,2,"");
+		versions[0][0][8][5].addintro("修复了Bug。");
+		versions[0][0][8][5].addintro("更改了扩展包的版本机制。");
 	}
 	void showversion(){
 		int _1=bigver,_2=midver,_3=smaver,_4=snpsot;
@@ -320,6 +328,19 @@ extern "C++"{//设置项、扩展包预处理
 	namespace themusicwithin{
 		map<string,string> musicalias;
 		string status="就绪";
+		bool exist(string s){
+			ifstream ans(s.c_str());
+			return ans.good();
+		}
+		void setalias(string src,string alias){
+			string full="themusicwithin\\"+src+".wav";
+			if(exist(full)){
+				musicalias[alias]=full;
+			}else{
+				status="数据残缺";
+				usingthemusicwithin=0;
+			}
+		}
 		void init(){
 			ifstream ans("themusicwithin\\manifest.inf");
 			usingthemusicwithin=ans.good();
@@ -332,17 +353,17 @@ extern "C++"{//设置项、扩展包预处理
 			int ext=x*270000+y*9000+z*300+a;
 			int thiss=bigver*270000+midver*9000+smaver*300+snpsot;
 			if(ext<thiss){
-				status="不可用";
+				status="版本过低";
 				usingthemusicwithin=0;
 				return;
 			}
 			if(ext>thiss){
-				status="基本就绪";
+				status="就绪(版本高)";
 			}
-			musicalias["battymcfaddin"]="themusicwithin\\01bf52.wav";
-			musicalias["dohdeoh"      ]="themusicwithin\\1d4b42.wav";
-			musicalias["nothing"      ]="themusicwithin\\df7dbf.wav";
-			musicalias["royalbanana"  ]="themusicwithin\\7868ba.wav";
+			setalias("01bf52","battymcfaddin");
+			setalias("1d4b42","dohdeoh");
+			setalias("7868ba","royalbanana");
+			setalias("df7dbf","nothing");
 		}
 #define PLAYMODE_PLAY 0
 #define PLAYMODE_STOP 1
